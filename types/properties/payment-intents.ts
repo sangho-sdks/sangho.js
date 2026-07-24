@@ -27,11 +27,11 @@ export type PaymentIntentsProperties = {
    * Récupère un PaymentIntent par son identifiant.
    * Ajouter `?expand=customer` ou `?expand=payment_link` pour les objets complets.
    *
-   * @param id - Identifiant du PaymentIntent (format `pay_xxx`)
+   * @param id - Identifiant du PaymentIntent (format `pi_xxx`)
    * @returns Le PaymentIntent correspondant
    *
    * @example
-   * const intent = await sangho.paymentIntents.retrieve("pay_xxx")
+   * const intent = await sangho.paymentIntents.retrieve("pi_xxx")
    */
   retrieve(id: string): Promise<PaymentIntent>;
 
@@ -55,12 +55,12 @@ export type PaymentIntentsProperties = {
   /**
    * Met à jour un PaymentIntent avant sa confirmation (PATCH).
    *
-   * @param id      - Identifiant du PaymentIntent (format `pay_xxx`)
+   * @param id      - Identifiant du PaymentIntent (format `pi_xxx`)
    * @param payloads - Champs à modifier (tous optionnels)
    * @returns Le PaymentIntent mis à jour
    *
    * @example
-   * await sangho.paymentIntents.update("pay_xxx", {
+   * await sangho.paymentIntents.update("pi_xxx", {
    *   description: "Nouvelle description",
    *   metadata: { order_id: "42" },
    * })
@@ -72,11 +72,11 @@ export type PaymentIntentsProperties = {
    * Retourne le PaymentIntent avec `status: "canceled"` (HTTP 200).
    * Ne fonctionne pas sur les statuts `"canceled"` ou `"succeeded"`.
    *
-   * @param id - Identifiant du PaymentIntent (format `pay_xxx`)
+   * @param id - Identifiant du PaymentIntent (format `pi_xxx`)
    * @returns Le PaymentIntent annulé
    *
    * @example
-   * const canceled = await sangho.paymentIntents.delete("pay_xxx")
+   * const canceled = await sangho.paymentIntents.delete("pi_xxx")
    */
   delete(id: string): Promise<PaymentIntent>;
 
@@ -85,12 +85,12 @@ export type PaymentIntentsProperties = {
    * Statuts acceptés : `"requires_payment_method"`, `"requires_confirmation"`.
    * Passe en `"processing"` après confirmation.
    *
-   * @param id      - Identifiant du PaymentIntent (format `pay_xxx`)
+   * @param id      - Identifiant du PaymentIntent (format `pi_xxx`)
    * @param payloads - Mode de paiement optionnel
    * @returns Le PaymentIntent confirmé
    *
    * @example
-   * const intent = await sangho.paymentIntents.confirm("pay_xxx", {
+   * const intent = await sangho.paymentIntents.confirm("pi_xxx", {
    *   payment_method: "meth_xxx",
    * })
    */
@@ -101,12 +101,12 @@ export type PaymentIntentsProperties = {
    * Nécessite `status: "requires_capture"`.
    * Passe en `"succeeded"` après capture.
    *
-   * @param id      - Identifiant du PaymentIntent (format `pay_xxx`)
+   * @param id      - Identifiant du PaymentIntent (format `pi_xxx`)
    * @param payloads - Montant à capturer (≤ montant original, optionnel)
    * @returns Le PaymentIntent capturé
    *
    * @example
-   * await sangho.paymentIntents.capture("pay_xxx", { amount_to_capture: 3000 })
+   * await sangho.paymentIntents.capture("pi_xxx", { amount_to_capture: 3000 })
    */
   capture(id: string, payloads?: CapturePayloads): Promise<PaymentIntent>;
 
@@ -114,12 +114,12 @@ export type PaymentIntentsProperties = {
    * Annule explicitement un PaymentIntent.
    * Impossible si `status` vaut `"canceled"` ou `"succeeded"`.
    *
-   * @param id      - Identifiant du PaymentIntent (format `pay_xxx`)
+   * @param id      - Identifiant du PaymentIntent (format `pi_xxx`)
    * @param payloads - Raison d'annulation (défaut: `"requested_by_customer"`)
    * @returns Le PaymentIntent annulé avec `status: "canceled"`
    *
    * @example
-   * await sangho.paymentIntents.cancel("pay_xxx", {
+   * await sangho.paymentIntents.cancel("pi_xxx", {
    *   cancellation_reason: "duplicate",
    * })
    */

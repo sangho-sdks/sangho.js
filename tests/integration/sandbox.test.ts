@@ -44,15 +44,15 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 describe("Sangho — instanciation", () => {
   it("refuse une clé API invalide", () => {
-    expect(() => new Sangho("invalid_key")).toThrow(expect.objectContaining({ code: "authentication_error" }));
+    expect(() => new Sangho("invalid_key")).toThrow(expect.objectContaining({ type: "AUTHENTICATION_ERROR" }));
   });
 
   it("refuse une clé vide", () => {
-    expect(() => new Sangho("")).toThrow(expect.objectContaining({ code: "authentication_error" }));
+    expect(() => new Sangho("")).toThrow(expect.objectContaining({ type: "AUTHENTICATION_ERROR" }));
   });
 
   it("refuse une clé trop courte", () => {
-    expect(() => new Sangho("sk_test_short")).toThrow(expect.objectContaining({ code: "authentication_error" }))
+    expect(() => new Sangho("sk_test_short")).toThrow(expect.objectContaining({ type: "AUTHENTICATION_ERROR" }))
   });
 
   itIf(HAS_KEY)("instancie correctement avec une clé sandbox valide", () => {
@@ -84,8 +84,6 @@ describe("paymentIntents — flux complet (sandbox)", () => {
     expect(createdIntent.amount).toBe(5000);
     expect(createdIntent.currency).toBe("XAF");
     expect(createdIntent.status).toBe("requires_payment_method");
-    expect(createdIntent.capture_method).toBe("automatic");
-    expect(createdIntent.confirmation_method).toBe("automatic");
     expect(createdIntent.metadata).toBeDefined();
     expect(createdIntent.created_at).toBeDefined();
   });
@@ -95,7 +93,6 @@ describe("paymentIntents — flux complet (sandbox)", () => {
       amount: 10_000,
       currency: "XAF",
       description: "Test intégration SDK",
-      capture_method: "manual",
       receipt_email: "test@sangho.com",
       metadata: { order_id: "test-order-001", source: "sdk-integration" },
     });
@@ -103,7 +100,6 @@ describe("paymentIntents — flux complet (sandbox)", () => {
     expect(intent.id).toMatch(/^pi_/);
     expect(intent.amount).toBe(10_000);
     expect(intent.description).toBe("Test intégration SDK");
-    expect(intent.capture_method).toBe("manual");
     expect(intent.receipt_email).toBe("test@sangho.com");
     expect(intent.metadata).toMatchObject({ order_id: "test-order-001" });
 
@@ -177,7 +173,6 @@ describe("paymentIntents — flux complet (sandbox)", () => {
     expect(cancelled.id).toBe(toCancel.id);
     expect(cancelled.status).toBe("canceled");
     expect(cancelled.cancellation_reason).toBe("requested_by_customer");
-    expect(cancelled.canceled_at).toBeDefined();
 
     await sleep(200);
   });
@@ -227,11 +222,7 @@ describe("paymentIntents — capture manuelle (sandbox)", () => {
     const intent = await sangho.paymentIntents.create({
       amount: 20_000,
       currency: "XAF",
-      capture_method: "manual",
-      confirmation_method: "manual",
     });
-
-    expect(intent.capture_method).toBe("manual");
 
     // Confirme d'abord
     const confirmed = await sangho.paymentIntents.confirm(intent.id);

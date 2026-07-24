@@ -20,7 +20,7 @@ export {
   SanghoNetworkError,
   SanghoTimeoutError,
 } from "./core/errors";
-export type { SanghoErrorCode, SanghoErrorResponse } from "./core/errors";
+export type { SanghoErrorType, SanghoErrorResponse } from "./core/errors";
 
 // ─── Types communs ────────────────────────────────────────────────────────────
 export type {
@@ -35,84 +35,50 @@ export type {
 } from "./types/common";
 
 // ─── Types de ressources ──────────────────────────────────────────────────────
-export type {
-  Customer,
-  CreateCustomerParams,
-  UpdateCustomerParams,
-  CustomerListParams
-} from "./types/resources/customers";
+export type { App, AppKey, AppKeys } from "./types/resources/apps";
+export type { SandboxResetResult } from "./types/resources/sandbox";
+export type { Customer } from "./types/resources/customers";
 export type {
   Product,
-  ProductImage,
-  CreateProductParams,
-  UpdateProductParams,
-  ProductListParams
+  ProductImage
 } from "./types/resources/products";
 export type {
-  PaymentIntent,
-  CreatePaymentIntentParams,
-  UpdatePaymentIntentParams,
-  ConfirmPaymentIntentParams,
-  CapturePaymentIntentParams,
-  CancelPaymentIntentParams,
-  PaymentIntentListParams,
+  PaymentIntent
 } from "./types/resources/payment-intents";
 export type {
-  Transaction,
-  TransactionListParams,
+  Transaction
 } from "./types/resources/transactions";
 export type {
-  Refund,
-  CreateRefundParams,
-  RefundListParams,
+  Refund
 } from "./types/resources/refunds";
 export type {
-  Invoice,
-  CreateInvoiceParams,
-  UpdateInvoiceParams,
-  InvoiceListParams,
+  Invoice
 } from "./types/resources/invoices";
 export type {
-  PaymentLink,
-  CreatePaymentLinkParams,
-  UpdatePaymentLinkParams,
-  PaymentLinkListParams,
+  PaymentLink
 } from "./types/resources/payment-links";
 export type {
-  CheckoutSession,
-  CreateCheckoutSessionParams,
-  CheckoutSessionListParams,
+  CheckoutSession
 } from "./types/resources/checkout-sessions";
 export type {
-  Subscription,
-  CreateSubscriptionParams,
-  UpdateSubscriptionParams,
-  SubscriptionListParams,
+  Subscription
 } from "./types/resources/subscriptions";
 export type {
-  PaymentMethod,
-  AttachPaymentMethodParams,
-  PaymentMethodListParams,
+  PaymentMethod
 } from "./types/resources/payment-methods";
 export type {
-  Receipt,
-  ReceiptListParams,
+  Receipt
 } from "./types/resources/receipts";
 export type {
   Webhook,
-  WebhookDelivery,
-  CreateWebhookParams,
-  UpdateWebhookParams,
-  WebhookListParams,
-  WebhookDeliveryListParams,
+  WebhookDelivery
 } from "./types/resources/webhooks";
 export type {
   SecurityProfile,
-  UpdateSecurityProfileParams,
+  UpdateSecurityProfileParams
 } from "./types/resources/security";
 export type {
-  Partner,
-  PartnerListParams,
+  Partner
 } from "./types/resources/partners";
 
 // ─── Utilitaires ─────────────────────────────────────────────────────────────

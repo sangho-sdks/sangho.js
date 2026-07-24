@@ -1,3 +1,12 @@
+.DEFAULT_GOAL := help
+
+# --- Force bash sous Windows (résout ls, /dev/null, true, etc.) ---
+ifeq ($(OS),Windows_NT)
+SHELL := C:\Program Files\Git\cmd\git.exe
+.SHELLFLAGS := -c
+endif
+
+
 tree:
 	node ./commands/generate-tree.js > .project/tree.txt
 # =============================================================================

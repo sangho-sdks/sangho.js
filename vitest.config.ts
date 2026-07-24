@@ -20,7 +20,11 @@ export default defineConfig({
     setupFiles: ['tests/setup.ts'],
     testTimeout: 10_000,
     env: {
-      SANGHO_API_KEY: 'pk_test_y7jEp4DQ_0XG9BR8x_xwz6bn3LCDjLRuPxFOoPIzQng',
+      // Pas de SANGHO_API_KEY ici : tests/integration/*.test.ts détecte son
+      // absence et se met en `it.skip` automatiquement (HAS_KEY = false).
+      // Pour lancer les tests d'intégration, exporter une VRAIE clé sandbox :
+      //   SANGHO_API_KEY=sk_test_xxx pnpm vitest run tests/integration
+      // (ou `make test-integration`) — jamais committer cette clé ici.
       SANGHO_ENV: 'sandbox',
       SANGHO_BASE_URL: 'https://api.sangho.com',
     },

@@ -1,10 +1,15 @@
 // playground.ts
 
-import Sangho from ".."
+import Sangho from "../index.ts"
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+const apiKey = "sk_test_eQzcjDg760wBNF2OzFd6nSr49wFWEEG0Tc7jjTZZIB0" // process.env.SANGHO_API_KEY;
 
-const sangho = new Sangho("sk_test_Jad_saUtL3sHESJlN4XBGaN-QnNTFs8K9BLYa744daE")
+if (!apiKey) {
+  throw new Error("Set SANGHO_API_KEY (a sk_test_* sandbox key) before running the playground.");
+}
 
-const result = await sangho.apps.list({foo: true});
+const sangho = new Sangho(apiKey)
+
+// const result = await sangho.security.retrieve();
+const result = await sangho.account.retrieve();
 console.log(result)

@@ -1,6 +1,7 @@
 
 
-export { AppsModule }        from "./apps";
+export { AccountModule }          from "./account";
+export { AppsModule }             from "./apps";
 export { AddressesModule }        from "./addresses";
 export { CustomersModule }        from "./customers";
 export { ProductsModule }         from "./products";
@@ -17,3 +18,4 @@ export { WebhooksModule }         from "./webhooks";
 export { SecurityModule }         from "./security";
 export { PartnersModule }         from "./partners";
 export { TerminalModule }         from "./terminal";
+export { SandboxModule }          from "./sandbox";

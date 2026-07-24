@@ -1,5 +1,5 @@
 {
-  "name": "sangho",
+  "name": "@sangho/js",
   "version": "0.1.0",
   "description": "SDK officiel JavaScript/TypeScript pour l'API Sangho",
   "author": "Sangho <dev@sangho.com>",

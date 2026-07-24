@@ -180,7 +180,7 @@ Match the backend `url_path` exactly:
 | Customers | `cust_` | `CustomersModule` | No |
 | Products | `prod_` | `ProductsModule` | No |
 | PaymentLinks | `link_` | `PaymentLinksModule` | No |
-| PaymentIntents | `pay_` | `PaymentIntentsModule` | No |
+| PaymentIntents | `pi_` | `PaymentIntentsModule` | No |
 | CheckoutSessions | `sess_` | `CheckoutSessionsModule` | No |
 | Invoices | `inv_` | `InvoicesModule` | No |
 | Transactions | `trans_` | `TransactionsModule` | Partial (no create/delete) |

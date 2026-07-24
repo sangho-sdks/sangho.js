@@ -127,6 +127,7 @@ export class HttpClient {
     const timer = setTimeout(() => controller.abort(), this.config.timeout);
 
     try {
+      console.log("BONJOUR MADAME")
       const response = await fetch(url, {
         method,
         headers: this.baseHeaders(extraHeaders),
@@ -139,7 +140,21 @@ export class HttpClient {
     } catch (err: unknown) {
       clearTimeout(timer);
 
-      if (err instanceof SanghoError) throw err;
+      if (err instanceof SanghoError) {
+        // 429 et 5xx sont transitoires → retry avec backoff exponentiel
+        // (ou le délai indiqué par le serveur pour un 429). Tout le reste
+        // (400/401/403/404/409/422, ...) est un problème permanent côté
+        // client : on ne retry jamais, on relance immédiatement.
+        if (this.isRetryable(err) && attempt < this.config.maxRetries) {
+          const delay =
+            err instanceof SanghoRateLimitError && err.retryAfter
+              ? err.retryAfter * 1000
+              : Math.pow(2, attempt) * 500;
+          await this.sleep(delay);
+          return this.request<T>(method, url, body, extraHeaders, attempt + 1);
+        }
+        throw err;
+      }
 
       if (err instanceof DOMException && err.name === "AbortError") {
         throw new SanghoTimeoutError(this.config.timeout);
@@ -155,6 +170,16 @@ export class HttpClient {
 
       throw err;
     }
+  }
+
+  /**
+   * Détermine si une SanghoError est transitoire et mérite un retry :
+   * 429 (rate limit) ou 5xx (erreur serveur). Jamais les 4xx restants
+   * (400/401/403/404/409/422) — ce sont des erreurs permanentes côté client.
+   */
+  private isRetryable(err: SanghoError): boolean {
+    if (err instanceof SanghoRateLimitError) return true;
+    return typeof err.statusCode === "number" && err.statusCode >= 500;
   }
 
   private async handleResponse<T>(response: Response): Promise<T> {
@@ -182,7 +207,10 @@ export class HttpClient {
     };
 
     const message = errorResponse.message;
-    const code = errorResponse.code;
+    // Insensible à la casse : le backend envoie tantôt "PUBLIC_KEY_NOT_ALLOWED"
+    // (catalogue d'erreurs DRF moderne), tantôt "public_key_not_allowed"
+    // (ancien décorateur Django) selon le chemin qui a rejeté la requête.
+    const code = errorResponse.code?.toLowerCase();
 
     switch (response.status) {
       case 401:
@@ -193,19 +221,19 @@ export class HttpClient {
         }
         throw new SanghoPermissionError(message, errorResponse);
       case 404:
-        throw new SanghoNotFoundError(message, (raw["request_id"] as string) ?? "");
+        throw new SanghoNotFoundError(message, errorResponse);
       case 409:
-        throw new SanghoIdempotencyError();
+        throw new SanghoIdempotencyError(errorResponse);
       case 422:
         throw new SanghoValidationError(errorResponse);
       case 429: {
         const retryAfter =
-          (raw["retry_later"] as number | undefined) ??
+          (raw["retry_after"] as number | undefined) ??
           Number(response.headers.get("Retry-After") ?? 60);
-        throw new SanghoRateLimitError(retryAfter);
+        throw new SanghoRateLimitError(retryAfter, errorResponse);
       }
       default:
-        throw new SanghoError(message, "api_error", response.status, errorResponse);
+        throw new SanghoError(message, "API_ERROR", response.status, errorResponse);
     }
   }
 

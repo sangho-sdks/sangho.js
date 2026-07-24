@@ -13,9 +13,11 @@ const TOLERANCE_SECONDS = 300; // 5 minutes
  *
  * @example
  * ```typescript
- * const event = await sangho.webhooks.constructEvent(
+ * // `constructEvent` est une méthode statique de `Sangho`, pas une méthode
+ * // d'instance sur `sangho.webhooks` — pas besoin d'avoir instancié le client.
+ * const event = await Sangho.constructEvent(
  *   rawBody,
- *   request.headers['Sangho-Signature'],
+ *   request.headers['sangho-signature'],
  *   'whsec_xxxxx'
  * )
  * ```
@@ -44,7 +46,7 @@ export async function constructEvent<T = unknown>(
   if (!timestamp || !expectedSig) {
     throw new SanghoError(
       "Invalid Sangho-Signature header format.",
-      "api_error"
+      "API_ERROR"
     );
   }
 
@@ -54,7 +56,7 @@ export async function constructEvent<T = unknown>(
     throw new SanghoError(
       `Webhook timestamp too old (${Math.abs(now - timestamp)}s). ` +
         `Possible replay attack. Tolerance is ${tolerance}s.`,
-      "api_error"
+      "API_ERROR"
     );
   }
 
@@ -65,7 +67,7 @@ export async function constructEvent<T = unknown>(
   if (!timingSafeEqual(computedSig, expectedSig)) {
     throw new SanghoError(
       "Webhook signature mismatch. Verify your webhook secret.",
-      "authentication_error",
+      "AUTHENTICATION_ERROR",
       401
     );
   }

@@ -11,6 +11,7 @@ import { beforeAll, afterAll, afterEach, vi, expect } from 'vitest'
 process.env.SANGHO_ENV = 'sandbox'
 process.env.SANGHO_BASE_URL = 'https://api.sangho.com'
 process.env.SANGHO_API_VERSION = 'v1'
+process.env.SANGHO_API_KEY = 'sk_test_eQzcjDg760wBNF2OzFd6nSr49wFWEEG0Tc7jjTZZIB0'
 
 // ─────────────────────────────────────────────
 // Mock global de fetch (pas de vrais appels réseau en unit)
@@ -50,14 +51,13 @@ export function mockFetchSuccess<T>(data: T, status = 200): void {
 }
 
 /**
- * Simule une réponse fetch en erreur (4xx / 5xx)
+ * Simule une réponse fetch en erreur (4xx / 5xx).
+ * Le payload est à plat (mêmes clés au top-level), pas imbriqué sous "error" —
+ * c'est le format réellement renvoyé par l'API (cf. backend/api/exceptions.py).
  */
-export function mockFetchError(status: number, error: {
-  code: string
-  message: string
-}): void {
+export function mockFetchError(status: number, body: Record<string, unknown> = {}): void {
   vi.mocked(global.fetch).mockResolvedValueOnce(
-    new Response(JSON.stringify({ error }), {
+    new Response(JSON.stringify(body), {
       status,
       headers: { 'Content-Type': 'application/json' },
     })

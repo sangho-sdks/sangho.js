@@ -24,7 +24,7 @@ export type CancellationReason =
 
 /**
  * Représente un PaymentIntent Sangho.
- * Préfixe d'identifiant : `pay_xxx`
+ * Préfixe d'identifiant : `pi_xxx`
  * Expand disponibles : `?expand=customer`, `?expand=payment_link`
  */
 export interface PaymentIntent extends Timestamps {

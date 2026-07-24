@@ -1,3 +1,4 @@
+export type { AccountProperties } from "./account";
 export type { AppsProperties } from "./apps";
 export type { AddressesProperties } from "./addresses";
 export type { PaymentIntentsProperties } from "./payment-intents";
@@ -15,3 +16,4 @@ export type { WebhooksProperties } from "./webhooks";
 export type { SecurityProperties } from "./security";
 export type { PartnersProperties } from "./partners";
 export type { TerminalProperties } from "./terminal";
+export type { SandboxProperties } from "./sandbox";

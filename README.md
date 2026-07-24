@@ -1,28 +1,26 @@
-# @sangho/sdk — SDK JavaScript / TypeScript officiel
+# @sangho/js — SDK JavaScript / TypeScript officiel
 
 SDK officiel de [Sangho](https://sangho.com), la plateforme de paiement B2B pour l'Afrique francophone.
 
-[![npm](https://img.shields.io/npm/v/@sangho/sdk)](https://www.npmjs.com/package/@sangho/sdk)
+[![npm](https://img.shields.io/npm/v/@sangho/js)](https://www.npmjs.com/package/@sangho/js)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescriptlang.org/)
-[![Docs](https://img.shields.io/badge/docs-docs.sangho.com-navy)](https://docs.sangho.com)
+[![Docs](https://img.shields.io/badge/docs-docs.sangho.ga-navy)](https://docs.sangho.ga)
 
 ---
 
 ## Installation
 
 ```bash
-npm install @sangho/sdk
+npm install @sangho/js
 # ou
-pnpm add @sangho/sdk
+pnpm add @sangho/js
 # ou
-yarn add @sangho/sdk
+yarn add @sangho/js
 ```
 
-Via CDN (navigateur uniquement, clé publique) :
-
-```html
-<script src="https://js.sangho.com/v1/sangho.min.js"></script>
-```
+> Ce SDK est un client **serveur** (Node.js ≥ 18). Il n'y a pas de build navigateur/CDN —
+> pour le paiement côté client, redirigez vers l'URL de checkout hébergée retournée par l'API
+> (`session.url` / `intent.url`), comme documenté ci-dessous.
 
 ---
 
@@ -42,7 +40,7 @@ Via CDN (navigateur uniquement, clé publique) :
 ## Démarrage rapide
 
 ```typescript
-import { Sangho } from "@sangho/sdk"
+import { Sangho } from "@sangho/js"
 
 // Initialisation (côté serveur — clé secrète)
 const sangho = new Sangho("sk_prod_xxxxxxxxxxxxxxxxxxxxxxxxxxxx")
@@ -65,8 +63,7 @@ const intent = await sangho.paymentIntents.create({
 
 // Confirmer le paiement
 const confirmed = await sangho.paymentIntents.confirm(intent.id, {
-  payment_method: "pm_xxx",
-  return_url: "https://monsite.com/return",
+  payment_method: "meth_xxx",
 })
 
 console.log(confirmed.status) // "succeeded" | "requires_action" | ...
@@ -83,16 +80,16 @@ console.log(confirmed.status) // "succeeded" | "requires_action" | ...
 const customer = await sangho.customers.create({ email, name, phone, currency })
 
 // Récupérer
-const customer = await sangho.customers.retrieve("cus_xxx")
+const customer = await sangho.customers.retrieve("cust_xxx")
 
 // Mettre à jour
-const customer = await sangho.customers.update("cus_xxx", { phone: "+24107000002" })
+const customer = await sangho.customers.update("cust_xxx", { phone: "+24107000002" })
 
 // Supprimer
-await sangho.customers.delete("cus_xxx")
+await sangho.customers.delete("cust_xxx")
 
 // Lister (avec filtres)
-const { results, count } = await sangho.customers.list({
+const { data, count } = await sangho.customers.list({
   page: 1,
   page_size: 20,
   status: "active",
@@ -100,10 +97,10 @@ const { results, count } = await sangho.customers.list({
 })
 
 // Transactions d'un client
-const txns = await sangho.customers.listTransactions("cus_xxx")
+const txns = await sangho.customers.listTransactions("cust_xxx")
 
 // Modes de paiement d'un client
-const methods = await sangho.customers.listPaymentMethods("cus_xxx")
+const methods = await sangho.customers.listPaymentMethods("cust_xxx")
 ```
 
 ### Products
@@ -116,12 +113,9 @@ const product = await sangho.products.create({
   currency: "XAF",
 })
 
-await sangho.products.addImage(product.id, {
-  url: "https://cdn.sangho.com/img/premium.png",
-  is_primary: true,
-})
+await sangho.products.update(product.id, { name: "Abonnement Premium+" })
 
-await sangho.products.archive("prod_xxx")
+await sangho.products.delete("prod_xxx") // archive côté backend (soft delete)
 ```
 
 ### Payment Intents
@@ -131,9 +125,9 @@ await sangho.products.archive("prod_xxx")
 const intent = await sangho.paymentIntents.create({
   amount: 10_000,
   currency: "XAF",
-  customer: "cus_xxx",
+  customer: "cust_xxx",
   confirm: true,
-  payment_method: "pm_xxx",
+  payment_method: "meth_xxx",
 })
 
 // Capture manuelle
@@ -149,9 +143,9 @@ await sangho.paymentIntents.cancel("pi_xxx", {
 
 ```typescript
 // Lecture seule
-const txn = await sangho.transactions.retrieve("txn_xxx")
+const txn = await sangho.transactions.retrieve("trans_xxx")
 
-const { results } = await sangho.transactions.list({
+const { data } = await sangho.transactions.list({
   status: "succeeded",
   currency: "XAF",
   created_after: "2024-01-01T00:00:00Z",
@@ -164,19 +158,19 @@ const { results } = await sangho.transactions.list({
 ```typescript
 // Remboursement partiel
 const refund = await sangho.refunds.create({
-  transaction: "txn_xxx",
+  transaction: "trans_xxx",
   amount: 5_000,
   reason: "requested_by_customer",
 })
 
-await sangho.refunds.cancel("re_xxx")
+await sangho.refunds.cancel("refd_xxx")
 ```
 
 ### Invoices
 
 ```typescript
 const invoice = await sangho.invoices.create({
-  customer: "cus_xxx",
+  customer: "cust_xxx",
   currency: "XAF",
   line_items: [
     { description: "Consultation", quantity: 2, unit_amount: 25_000 },
@@ -202,7 +196,7 @@ const link = await sangho.paymentLinks.create({
   usage_limit: 100,
 })
 
-console.log(link.url) // https://checkout.sangho.com/pay/pl_xxx
+console.log(link.url) // https://checkout.sangho.com/pay/link_xxx
 ```
 
 ### Checkout Sessions
@@ -224,7 +218,7 @@ const session = await sangho.checkoutSessions.create({
 
 ```typescript
 const sub = await sangho.subscriptions.create({
-  customer: "cus_xxx",
+  customer: "cust_xxx",
   currency: "XAF",
   unit_amount: 15_000,
   interval: "month",
@@ -258,13 +252,13 @@ const deliveries = await sangho.webhooks.listDeliveries(webhook.id, {
 })
 
 // Rejouer une livraison
-await sangho.webhooks.replayDelivery(webhook.id, "wdl_xxx")
+await sangho.webhooks.retryDelivery(webhook.id, "wdl_xxx")
 ```
 
 ### Vérification des signatures webhook
 
 ```typescript
-import { Sangho } from "@sangho/sdk"
+import { Sangho } from "@sangho/js"
 
 // Express
 app.post(
@@ -306,7 +300,7 @@ import {
   SanghoValidationError,
   SanghoNotFoundError,
   SanghoRateLimitError,
-} from "@sangho/sdk"
+} from "@sangho/js"
 
 try {
   const customer = await sangho.customers.create({ email: "invalid" })
@@ -320,6 +314,10 @@ try {
     console.error("Ressource introuvable")
   } else if (err instanceof SanghoRateLimitError) {
     console.error(`Limite de taux dépassée. Réessayez dans ${err.retryAfter}s`)
+  } else if (err instanceof SanghoError) {
+    console.error(err.type);       // Catégorie — ex. 'VALIDATION_ERROR'
+    console.error(err.code);       // Code métier précis — ex. 'AMOUNT_TOO_SMALL'
+    console.error(err.statusCode); // Code HTTP
   } else {
     throw err
   }
@@ -344,21 +342,22 @@ const sangho = new Sangho("sk_test_xxx", {
 
 - La clé API est transmise uniquement via le header `Authorization: Bearer`
 - Chaque requête POST génère automatiquement une `Idempotency-Key` unique (UUID v4)
-- Les retries auto n'ont lieu que pour les erreurs `429` et `5xx` (jamais `4xx`)
+- Les retries auto n'ont lieu que pour les erreurs `429` et `5xx` (jamais `4xx`), en respectant `Retry-After` pour les `429`
 - La vérification de signature webhook utilise HMAC-SHA256 avec protection anti-replay (5 min)
-- Les clés `sk_` sont rejetées côté SDK si utilisées avec des opérations non autorisées (ex: checkout public)
+- Les clés publiques (`pk_`) sont rejetées côté SDK si utilisées pour des opérations réservées aux clés secrètes (`sk_`)
 
 ---
 
 ## Compatibilité
 
+Ce SDK est un client **serveur** — il n'y a pas de build navigateur/UMD ni de CDN.
+
 | Environnement | Support |
 |---|---|
-| Node.js ≥ 18 | ✅ natif |
-| Navigateur moderne | ✅ ESM + UMD |
-| TypeScript ≥ 5.0 | ✅ types complets |
-| Deno | ✅ via npm: |
+| Node.js ≥ 18 | ✅ natif (ESM + CJS) |
+| Deno | ✅ via `npm:` |
 | Bun | ✅ |
+| TypeScript ≥ 5.0 | ✅ types complets |
 
 ---
 

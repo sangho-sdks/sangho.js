@@ -2,10 +2,13 @@
   "compilerOptions": {
     "target": "ES2022",
     "useDefineForClassFields": true,
-    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ES2023",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "module": "ESNext",
     "skipLibCheck": true,
-
     /* Bundler mode */
     "moduleResolution": "bundler",
     "noEmit": true,
@@ -13,7 +16,6 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "jsx": "react-jsx",
-
     /* Linting */
     "strict": false,
     "noUnusedLocals": false,
@@ -21,14 +23,36 @@
     "noImplicitAny": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/*":             ["./*"],
-      "@core/*":         ["./core/*"],
-      "@modules/*":      ["./modules/*"],
-      "@tests/*":        ["./tests/*"],
-      "@sangho-types/*": ["./types/*"],
-      "@utils/*":        ["./utils/*"]
+      "@/*": [
+        "./*"
+      ],
+      "@/modules": [
+        "./modules/index.ts"
+      ],
+      "@core/*": [
+        "./core/*"
+      ],
+      "@modules/*": [
+        "./modules/*"
+      ],
+      "@tests/*": [
+        "./tests/*"
+      ],
+      "@sangho-types/*": [
+        "./types/*"
+      ],
+      "@utils/*": [
+        "./utils/*"
+      ]
     },
-    "composite": true,
+    "composite": false,
     "allowSyntheticDefaultImports": true,
   },
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

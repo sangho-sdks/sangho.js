@@ -27,7 +27,8 @@ export class CheckoutSessionsModule extends BaseModule {
   }
 
   protected _retrieve(id: string): Promise<CheckoutSession> {
-    this.http.assertSecretKey("checkoutSessions.retrieve");
+    // Le backend autorise explicitement la clé publique sur cette action
+    // (page de confirmation côté navigateur) — ne pas la bloquer ici.
     return this.http.get<CheckoutSession>(`/checkout-sessions/${id}/`);
   }
 
