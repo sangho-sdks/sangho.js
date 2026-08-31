@@ -55,6 +55,8 @@
     "clean": "rimraf dist",
     "prepublishOnly": "pnpm run clean && pnpm run build && pnpm run typecheck",
     "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
     "test:watch": "vitest",
     "version:patch": "pnpm version patch && git push --follow-tags",
     "version:minor": "pnpm version minor && git push --follow-tags",

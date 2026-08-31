@@ -33,7 +33,11 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run typecheck
       - run: pnpm run lint
-      - run: pnpm run test
+      # Uniquement les tests unitaires ici : ce workflow n'a pas de secret
+      # SANGHO_API_KEY et ne doit pas dépendre de la disponibilité du
+      # sandbox externe. Les tests d'intégration se lancent à part, en
+      # local, via `make test-integration`.
+      - run: pnpm run test:unit
 
       - name: Bump version
         id: bump

@@ -2,7 +2,7 @@
 
 import Sangho from "../index.ts"
 
-const apiKey = "sk_test_eQzcjDg760wBNF2OzFd6nSr49wFWEEG0Tc7jjTZZIB0" // process.env.SANGHO_API_KEY;
+const apiKey = process.env.SANGHO_API_KEY;
 
 if (!apiKey) {
   throw new Error("Set SANGHO_API_KEY (a sk_test_* sandbox key) before running the playground.");
