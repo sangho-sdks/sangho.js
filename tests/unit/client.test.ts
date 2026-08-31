@@ -249,6 +249,11 @@ describe('Sangho — retry automatique sur erreurs transitoires (429 / 5xx)', ()
     mockFetchError(429, { message: 'Trop de requêtes (3, finale).', retry_after: 1 })
 
     const promise = sangho.customers.list()
+    // Attache un handler tout de suite : `promise` rejette pendant
+    // runAllTimersAsync() (avant qu'on arrive à `expect(promise).rejects`
+    // plus bas), donc sans ce catch immédiat Node la remonte comme
+    // "Unhandled Rejection" même si on l'attend juste après.
+    promise.catch(() => {})
     await vi.runAllTimersAsync()
     await expect(promise).rejects.toBeInstanceOf(SanghoRateLimitError)
     await expect(promise).rejects.toMatchObject({ message: expect.stringContaining('finale') })
@@ -265,6 +270,9 @@ describe('Sangho — retry automatique sur erreurs transitoires (429 / 5xx)', ()
     mockFetchError(500, { message: 'Erreur serveur (3, finale).' })
 
     const promise = sangho.customers.list()
+    // Cf. commentaire du test 429 ci-dessus : catch immédiat pour éviter
+    // l'"Unhandled Rejection" pendant runAllTimersAsync().
+    promise.catch(() => {})
     await vi.runAllTimersAsync()
     await expect(promise).rejects.toMatchObject({ message: 'Erreur serveur (3, finale).' })
     expect(global.fetch).toHaveBeenCalledTimes(3)
