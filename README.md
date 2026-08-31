@@ -1,8 +1,8 @@
-# @sanghosdk — SDK JavaScript / TypeScript officiel
+# @sanghosdk/js — SDK JavaScript / TypeScript officiel
 
 SDK officiel de [Sangho](https://sangho.ga), la plateforme de paiement B2B pour l'Afrique francophone.
 
-[![npm](https://img.shields.io/npm/v/@sanghosdk)](https://www.npmjs.com/package/@sanghosdk)
+[![npm](https://img.shields.io/npm/v/@sanghosdk/js)](https://www.npmjs.com/package/@sanghosdk/js)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescriptlang.org/)
 [![Docs](https://img.shields.io/badge/docs-docs.sangho.ga-navy)](https://docs.sangho.ga)
 
@@ -11,11 +11,11 @@ SDK officiel de [Sangho](https://sangho.ga), la plateforme de paiement B2B pour 
 ## Installation
 
 ```bash
-npm install @sanghosdk
+npm install @sanghosdk/js
 # ou
-pnpm add @sanghosdk
+pnpm add @sanghosdk/js
 # ou
-yarn add @sanghosdk
+yarn add @sanghosdk/js
 ```
 
 > Ce SDK est un client **serveur** (Node.js ≥ 18). Il n'y a pas de build navigateur/CDN —
@@ -40,7 +40,7 @@ yarn add @sanghosdk
 ## Démarrage rapide
 
 ```typescript
-import { Sangho } from "@sanghosdk"
+import { Sangho } from "@sanghosdk/js"
 
 // Initialisation (côté serveur — clé secrète)
 const sangho = new Sangho("sk_prod_xxxxxxxxxxxxxxxxxxxxxxxxxxxx")
@@ -258,7 +258,7 @@ await sangho.webhooks.retryDelivery(webhook.id, "wdl_xxx")
 ### Vérification des signatures webhook
 
 ```typescript
-import { Sangho } from "@sanghosdk"
+import { Sangho } from "@sanghosdk/js"
 
 // Express
 app.post(
@@ -300,7 +300,7 @@ import {
   SanghoValidationError,
   SanghoNotFoundError,
   SanghoRateLimitError,
-} from "@sanghosdk"
+} from "@sanghosdk/js"
 
 try {
   const customer = await sangho.customers.create({ email: "invalid" })

@@ -1,9 +1,10 @@
 {
-  "name": "@sanghosdk",
+  "name": "@sanghosdk/js",
   "version": "0.1.0",
   "description": "SDK officiel JavaScript/TypeScript pour l'API Sangho",
   "author": "Sangho <nels.holy.allg@gmail.com>",
   "license": "MIT",
+  "packageManager": "pnpm@10.33.4",
   "homepage": "https://docs.sangho.ga/sdks/js",
   "repository": {
     "type": "git",
