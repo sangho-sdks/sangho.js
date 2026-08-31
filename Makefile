@@ -8,7 +8,7 @@ endif
 
 
 tree:
-	node ./commands/generate-tree.js > .project/tree.txt
+	node ./.commands/generate-tree.js > .project/tree.txt
 # =============================================================================
 # Sangho SDK JS — Makefile
 # =============================================================================

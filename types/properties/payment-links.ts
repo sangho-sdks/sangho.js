@@ -48,7 +48,7 @@ export type PaymentLinksProperties = {
    *   product_quantity_settings: { prod_xxx: 1 },
    *   redirect_url: { success: "https://monsite.com/merci" },
    * })
-   * console.log(link.url) // https://pay.sangho.com/test/...
+   * console.log(link.url) // https://pay.sangho.ga/test/...
    */
   create(payloads: CreatePayloads): Promise<PaymentLink>;
 

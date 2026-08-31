@@ -9,7 +9,7 @@ import { beforeAll, afterAll, afterEach, vi, expect } from 'vitest'
 // Variables d'environnement de test
 // ─────────────────────────────────────────────
 process.env.SANGHO_ENV = 'sandbox'
-process.env.SANGHO_BASE_URL = 'https://api.sangho.com'
+process.env.SANGHO_BASE_URL = 'https://api.sangho.ga'
 process.env.SANGHO_API_VERSION = 'v1'
 process.env.SANGHO_API_KEY = 'sk_test_eQzcjDg760wBNF2OzFd6nSr49wFWEEG0Tc7jjTZZIB0'
 

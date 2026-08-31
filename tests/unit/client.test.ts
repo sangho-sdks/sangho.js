@@ -43,7 +43,7 @@ describe('Sangho — instanciation', () => {
   })
 
   it('refuse un baseURL non-HTTPS', () => {
-    expect(() => new Sangho(SECRET_KEY, { baseURL: 'http://api.sangho.com/v1' })).toThrow(SanghoError)
+    expect(() => new Sangho(SECRET_KEY, { baseURL: 'http://api.sangho.ga/v1' })).toThrow(SanghoError)
   })
 
   it('accepte un baseURL http sur localhost (développement)', () => {

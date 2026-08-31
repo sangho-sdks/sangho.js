@@ -27,7 +27,7 @@ export default defineConfig({
   esbuildOptions(options) {
     options.legalComments = "inline";
     options.banner = {
-      js: `/* sangho-sdk-js v${pkg.version} — https://docs.sangho.com/sdks/js */`,
+      js: `/* sangho-sdk-js v${pkg.version} — https://docs.sangho.ga/sdks/js */`,
     };
   },
 });

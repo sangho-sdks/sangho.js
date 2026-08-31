@@ -26,7 +26,7 @@ export default defineConfig({
       //   SANGHO_API_KEY=sk_test_xxx pnpm vitest run tests/integration
       // (ou `make test-integration`) — jamais committer cette clé ici.
       SANGHO_ENV: 'sandbox',
-      SANGHO_BASE_URL: 'https://api.sangho.com',
+      SANGHO_BASE_URL: 'https://api.sangho.ga',
     },
     coverage: {
       provider: 'v8',

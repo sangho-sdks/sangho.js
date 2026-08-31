@@ -15,7 +15,6 @@ export class SecurityModule extends BaseModule {
   }
 
   protected _retrieve(): Promise<SecurityProfile> {
-    console.log(12547)
     this.http.assertSecretKey("security.retrieve");
     return this.http.get<SecurityProfile>("/security/me/");
   }

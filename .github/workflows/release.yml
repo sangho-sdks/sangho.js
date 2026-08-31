@@ -1,0 +1,72 @@
+# .github/workflows/release.yml
+name: Release SDK
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Type de version"
+        required: true
+        default: patch
+        type: choice
+        options: [patch, minor, major]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: "https://registry.npmjs.org"
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run typecheck
+      - run: pnpm run lint
+      - run: pnpm run test
+
+      - name: Bump version
+        id: bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          pnpm version ${{ inputs.bump }} -m "chore: release v%s"
+          echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+          git push origin main --follow-tags
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Publish npm
+        run: pnpm publish --no-git-checks --access public
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Deploy to R2
+        run: |
+          pip install awscli
+          aws configure set aws_access_key_id ${{ secrets.R2_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.R2_SECRET_ACCESS_KEY }}
+
+          VERSION=${{ steps.bump.outputs.version }}
+          # Version figée — upload une seule fois, jamais réécrit ensuite
+          aws s3 cp dist/index.js s3://${{ secrets.R2_BUCKET }}/v$VERSION/sangho.js \
+            --endpoint-url ${{ secrets.R2_ENDPOINT }} \
+              -cache-control "public, max-age=31536000, immutable" \
+            --content-type "application/javascript"
+          aws s3 cp dist/index.cjs s3://${{ secrets.R2_BUCKET }}/v$VERSION/sangho.cjs \
+            --endpoint-url ${{ secrets.R2_ENDPOINT }} \
+            --cache-control "public, max-age=31536000, immutable"
+
+          # Alias "latest" — réécrit à chaque release
+          aws s3 cp dist/index.js s3://${{ secrets.R2_BUCKET }}/latest/sangho.js \
+            --endpoint-url ${{ secrets.R2_ENDPOINT }} \
+            --cache-control "public, max-age=300, stale-while-revalidate=86400" \
+            --content-type "application/javascript"

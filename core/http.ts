@@ -127,7 +127,6 @@ export class HttpClient {
     const timer = setTimeout(() => controller.abort(), this.config.timeout);
 
     try {
-      console.log("BONJOUR MADAME")
       const response = await fetch(url, {
         method,
         headers: this.baseHeaders(extraHeaders),

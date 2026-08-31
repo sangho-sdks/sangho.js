@@ -1,8 +1,8 @@
-# @sangho/js — SDK JavaScript / TypeScript officiel
+# @sanghosdk — SDK JavaScript / TypeScript officiel
 
-SDK officiel de [Sangho](https://sangho.com), la plateforme de paiement B2B pour l'Afrique francophone.
+SDK officiel de [Sangho](https://sangho.ga), la plateforme de paiement B2B pour l'Afrique francophone.
 
-[![npm](https://img.shields.io/npm/v/@sangho/js)](https://www.npmjs.com/package/@sangho/js)
+[![npm](https://img.shields.io/npm/v/@sanghosdk)](https://www.npmjs.com/package/@sanghosdk)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescriptlang.org/)
 [![Docs](https://img.shields.io/badge/docs-docs.sangho.ga-navy)](https://docs.sangho.ga)
 
@@ -11,11 +11,11 @@ SDK officiel de [Sangho](https://sangho.com), la plateforme de paiement B2B pour
 ## Installation
 
 ```bash
-npm install @sangho/js
+npm install @sanghosdk
 # ou
-pnpm add @sangho/js
+pnpm add @sanghosdk
 # ou
-yarn add @sangho/js
+yarn add @sanghosdk
 ```
 
 > Ce SDK est un client **serveur** (Node.js ≥ 18). Il n'y a pas de build navigateur/CDN —
@@ -40,7 +40,7 @@ yarn add @sangho/js
 ## Démarrage rapide
 
 ```typescript
-import { Sangho } from "@sangho/js"
+import { Sangho } from "@sanghosdk"
 
 // Initialisation (côté serveur — clé secrète)
 const sangho = new Sangho("sk_prod_xxxxxxxxxxxxxxxxxxxxxxxxxxxx")
@@ -196,7 +196,7 @@ const link = await sangho.paymentLinks.create({
   usage_limit: 100,
 })
 
-console.log(link.url) // https://checkout.sangho.com/pay/link_xxx
+console.log(link.url) // https://checkout.sangho.ga/pay/link_xxx
 ```
 
 ### Checkout Sessions
@@ -258,7 +258,7 @@ await sangho.webhooks.retryDelivery(webhook.id, "wdl_xxx")
 ### Vérification des signatures webhook
 
 ```typescript
-import { Sangho } from "@sangho/js"
+import { Sangho } from "@sanghosdk"
 
 // Express
 app.post(
@@ -300,7 +300,7 @@ import {
   SanghoValidationError,
   SanghoNotFoundError,
   SanghoRateLimitError,
-} from "@sangho/js"
+} from "@sanghosdk"
 
 try {
   const customer = await sangho.customers.create({ email: "invalid" })
@@ -332,7 +332,7 @@ try {
 const sangho = new Sangho("sk_test_xxx", {
   timeout: 10_000,      // Timeout en ms (défaut : 30 000)
   maxRetries: 5,        // Nombre de retries auto (défaut : 3)
-  baseURL: "https://api.staging.sangho.com/v1",  // URL custom (staging)
+  baseURL: "https://api.staging.sangho.ga/v1",  // URL custom (staging)
 })
 ```
 
@@ -363,4 +363,4 @@ Ce SDK est un client **serveur** — il n'y a pas de build navigateur/UMD ni de 
 
 ## Licence
 
-MIT © [Sangho](https://sangho.com)
+MIT © [Sangho](https://sangho.ga)

@@ -93,14 +93,14 @@ describe("paymentIntents — flux complet (sandbox)", () => {
       amount: 10_000,
       currency: "XAF",
       description: "Test intégration SDK",
-      receipt_email: "test@sangho.com",
+      receipt_email: "test@sangho.ga",
       metadata: { order_id: "test-order-001", source: "sdk-integration" },
     });
 
     expect(intent.id).toMatch(/^pi_/);
     expect(intent.amount).toBe(10_000);
     expect(intent.description).toBe("Test intégration SDK");
-    expect(intent.receipt_email).toBe("test@sangho.com");
+    expect(intent.receipt_email).toBe("test@sangho.ga");
     expect(intent.metadata).toMatchObject({ order_id: "test-order-001" });
 
     await sleep(200);

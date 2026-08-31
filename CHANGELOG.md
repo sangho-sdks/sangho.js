@@ -21,7 +21,7 @@ Ce projet respecte le [Semantic Versioning](https://semver.org/lang/fr/).
 - **Breaking** : `ListResponse<T>` expose désormais `data: T[]` au lieu de `results: T[]`, conformément à la pagination réelle de l'API. Tout code utilisant `.results` sur une liste doit passer à `.data`.
 - **Breaking** : `CurrencyCode` n'est plus restreint à `"XAF" | "XOF"` — le type couvre désormais l'ensemble des codes ISO 4217 actifs standards (`ISO_4217_CURRENCIES` dans `types/common.ts`). Cela reflète uniquement la validité ISO 4217 du code, pas ce qu'un marchand a le droit d'utiliser : chaque plan Sangho entitle un sous-ensemble de devises, et le backend rejette à l'exécution toute devise hors plan (`SanghoError` avec `.code === "CURRENCY_NOT_IN_PLAN"`, ou `"INVALID_CURRENCY"` si le code n'est pas un ISO 4217 reconnu).
 - **Breaking** : `SanghoError.code` ne vaut plus une des 10 catégories basses (`"authentication_error"`, `"api_error"`, ...) — c'est maintenant le code métier précis du backend (`raw.code`), typé `string` (catalogue ouvert, côté backend). La catégorie large vit désormais dans le nouveau champ `.type` (`SanghoErrorType`, 9 valeurs UPPERCASE). Le type `SanghoErrorCode` a été retiré ; utiliser `SanghoErrorType`.
-- **Breaking** : renommage du package `sangho` → `@sangho/js`.
+- **Breaking** : renommage du package `sangho` → `@sanghosdk`.
 - `checkoutSessions.retrieve()` n'exige plus une clé secrète — le backend autorise explicitement la clé publique sur cette action (page de confirmation navigateur).
 - `security.*` appelle désormais les bonnes routes (`/security/me/`, `/security/update_me/`) et existe réellement à l'exécution en tant que `sangho.security` (elle n'existait pas auparavant malgré son typage).
 

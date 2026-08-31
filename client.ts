@@ -56,7 +56,7 @@ function validateApiKey(key: string): void {
   if (!key || typeof key !== "string") {
     throw new SanghoError(
       "API key must be a non-empty string. " +
-      "Find your API keys at https://dash.sangho.com/project/api-keys.",
+      "Find your API keys at https://dash.sangho.ga/project/api-keys.",
       "AUTHENTICATION_ERROR"
     );
   }
@@ -134,7 +134,7 @@ export class Sangho extends Mixins(
     validateApiKey(apiKey);
 
     const isSandbox = apiKey.startsWith("pk_test_") || apiKey.startsWith("sk_test_");
-    const baseURL = options.baseURL ?? "https://api.sangho.com/v1";
+    const baseURL = options.baseURL ?? "https://api.sangho.ga/v1";
     validateBaseURL(baseURL);
 
     const http = new HttpClient({
