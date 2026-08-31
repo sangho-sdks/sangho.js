@@ -85,7 +85,7 @@ export class HttpClient {
     return this.request<T>("DELETE", url);
   }
 
-  async options<T = any>(path: string): Promise<T> {
+  async options<T = unknown>(path: string): Promise<T> {
     const url = this.buildURL(path);
     return this.request<T>("OPTIONS", url);
   }

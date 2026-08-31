@@ -98,7 +98,6 @@ async function hmacSha256(secret: string, message: string): Promise<string> {
   }
 
   // Fallback Node.js (import dynamique pour ne pas casser le bundle navigateur)
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { createHmac } = await import("crypto");
   return createHmac("sha256", secret).update(message).digest("hex");
 }
