@@ -5,7 +5,7 @@
   "author": "Sangho <nels.holy.allg@gmail.com>",
   "license": "MIT",
   "packageManager": "pnpm@10.33.4",
-  "homepage": "https://docs.sangho.ga/sdks/js",
+  "homepage": "https://docs.sangho.ga/api/sdks/nodejs/",
   "repository": {
     "type": "git",
     "url": "https://github.com/sangho-sdks/sangho.js.git"
