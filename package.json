@@ -1,6 +1,6 @@
 {
   "name": "@sanghosdk/js",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "SDK officiel JavaScript/TypeScript pour l'API Sangho",
   "author": "Sangho <nels.holy.allg@gmail.com>",
   "license": "MIT",
