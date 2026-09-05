@@ -18,6 +18,9 @@ import {
 
 export type ApiKeyType = "public" | "secret";
 
+declare const __SDK_VERSION__: string;
+const SDK_VERSION = __SDK_VERSION__;
+
 export interface HttpClientConfig {
   baseURL: string;
   timeout: number;
@@ -36,8 +39,6 @@ function generateUUID(): string {
     return v.toString(16);
   });
 }
-
-const SDK_VERSION = "__SDK_VERSION__";
 
 export class HttpClient {
   readonly keyType: ApiKeyType;

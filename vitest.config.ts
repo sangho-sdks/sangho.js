@@ -1,8 +1,16 @@
 import { defineConfig } from 'vitest/config'
 import { resolve } from 'path'
+import { readFileSync } from 'fs'
+
+const pkg = JSON.parse(readFileSync('./package.json', 'utf-8')) as {
+  version: string
+}
 
 export default defineConfig({
   root: '.',
+  define: {
+    __SDK_VERSION__: JSON.stringify(pkg.version),
+  },
   test: {
     environment: 'node',
     include: [
@@ -20,11 +28,6 @@ export default defineConfig({
     setupFiles: ['tests/setup.ts'],
     testTimeout: 10_000,
     env: {
-      // Pas de SANGHO_API_KEY ici : tests/integration/*.test.ts détecte son
-      // absence et se met en `it.skip` automatiquement (HAS_KEY = false).
-      // Pour lancer les tests d'intégration, exporter une VRAIE clé sandbox :
-      //   SANGHO_API_KEY=sk_test_xxx pnpm vitest run tests/integration
-      // (ou `make test-integration`) — jamais committer cette clé ici.
       SANGHO_ENV: 'sandbox',
       SANGHO_BASE_URL: 'https://api.sangho.ga',
     },
