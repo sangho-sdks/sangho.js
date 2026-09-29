@@ -6,9 +6,7 @@ import type {
   CreatePayloads,
   Payloads,
   CustomerCriteria,
-  TransactionCriteria,
 } from "@/types/resources/customers";
-import type { Transaction } from "@/types/resources/transactions";
 import type { PaymentMethod } from "@/types/resources/payment-methods";
 
 export class CustomersModule extends BaseModule {
@@ -18,7 +16,6 @@ export class CustomersModule extends BaseModule {
     create: (payloads: CreatePayloads) => this._create(payloads),
     update: (id: string, payloads: Payloads) => this._update(id, payloads),
     delete: (id: string) => this._delete(id),
-    listTransactions: (id: string, criteria?: TransactionCriteria) => this._listTransactions(id, criteria),
     listPaymentMethods: (id: string) => this._listPaymentMethods(id),
     options: () => this._options(),
   };
@@ -52,22 +49,10 @@ export class CustomersModule extends BaseModule {
     return this.http.delete(`/customers/${id}/`);
   }
 
-  protected _listTransactions(
-    id: string,
-    criteria?: TransactionCriteria
-  ): Promise<ListResponse<Transaction>> {
-    this.http.assertSecretKey("customers.listTransactions");
-    return this.http.get<ListResponse<Transaction>>(
-      `/customers/${id}/transactions/`,
-      criteria
-    );
-  }
-
+  // La route /customers/{id}/payment-methods/ n'existe pas côté API : on filtre /payment-methods/?customer=<id>.
   protected _listPaymentMethods(id: string): Promise<ListResponse<PaymentMethod>> {
     this.http.assertSecretKey("customers.listPaymentMethods");
-    return this.http.get<ListResponse<PaymentMethod>>(
-      `/customers/${id}/payment-methods/`
-    );
+    return this.http.get<ListResponse<PaymentMethod>>("/payment-methods/", { customer: id });
   }
 
   protected _options(): Promise<DRFOptions> {

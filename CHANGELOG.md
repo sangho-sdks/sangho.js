@@ -29,10 +29,12 @@ Ce projet respecte le [Semantic Versioning](https://semver.org/lang/fr/).
 
 ### Removed
 
+- `customers.listTransactions` : la route `/customers/{id}/transactions/` n'existe pas côté API (elle répondait 404) et l'API n'a pas de filtre `customer` sur les transactions. `customers.listPaymentMethods` passe désormais par `GET /payment-methods/?customer=<id>`.
 - Suppression des fichiers de test `tests/unit/payouts.test.ts` et `tests/unit/sandbox.test.ts` : ils testaient un module « Payouts » qui n'existe ni dans le SDK ni comme endpoint public de l'API.
 
 ### Fixed
 
+- `LICENSE` (MIT) ajouté et publié avec le paquet (il était déclaré mais absent).
 - `SanghoNotFoundError` ne construit plus un message dupliqué/incohérent sur les 404 — elle relaie désormais tel quel le message renvoyé par le backend.
 - `SanghoRateLimitError` lit correctement `retry_after` (au lieu de `retry_later`, qui n'existe pas côté backend).
 - La comparaison du code d'erreur `public_key_not_allowed` est désormais insensible à la casse (le backend envoie parfois `PUBLIC_KEY_NOT_ALLOWED`).

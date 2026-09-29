@@ -4,9 +4,7 @@ import type {
   CreatePayloads,
   Payloads,
   CustomerCriteria,
-  TransactionCriteria,
 } from "@/types/resources/customers";
-import type { Transaction } from "@/types/resources/transactions";
 import type { PaymentMethod } from "@/types/resources/payment-methods";
 
 export type CustomersProperties = {
@@ -75,24 +73,6 @@ export type CustomersProperties = {
   delete(id: string): Promise<void>;
 
   /**
-   * Liste les transactions associées à un client.
-   *
-   * @param id       - Identifiant du client
-   * @param criteria - Filtres de pagination optionnels
-   * @returns Liste paginée de transactions
-   *
-   * @example
-   * const txs = await sangho.customers.listTransactions("cust_xxx")
-   *
-   * @remarks Nécessite que l'action `GET /customers/:id/transactions/`
-   * soit déclarée côté backend (`@action` sur `CustomerViewSet`).
-   */
-  listTransactions(
-    id: string,
-    criteria?: TransactionCriteria
-  ): Promise<ListResponse<Transaction>>;
-
-  /**
    * Liste les modes de paiement enregistrés d'un client.
    *
    * @param id - Identifiant du client
@@ -101,8 +81,8 @@ export type CustomersProperties = {
    * @example
    * const methods = await sangho.customers.listPaymentMethods("cust_xxx")
    *
-   * @remarks Nécessite que l'action `GET /customers/:id/payment-methods/`
-   * soit déclarée côté backend (`@action` sur `CustomerViewSet`).
+   * @remarks Appelle `GET /payment-methods/?customer=<id>` (la route
+   * `/customers/:id/payment-methods/` n'existe pas côté API).
    */
   listPaymentMethods(id: string): Promise<ListResponse<PaymentMethod>>;
 
