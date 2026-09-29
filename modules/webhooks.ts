@@ -43,7 +43,7 @@ export class WebhooksModule extends BaseModule {
 
   protected _create(payloads: CreatePayloads, options?: RequestOptions): Promise<Webhook & { secret: string }> {
     this.http.assertSecretKey("webhooks.create");
-    return this.http.post<Webhook & { secret: string }>("/webhooks/", payloads);
+    return this.http.post<Webhook & { secret: string }>("/webhooks/", payloads, options?.idempotencyKey);
   }
 
   protected _update(id: string, payloads: Payloads): Promise<Webhook> {
