@@ -258,7 +258,7 @@ await sangho.webhooks.retryDelivery(webhook.id, "wdl_xxx")
 ### Vérification des signatures webhook
 
 ```typescript
-import { Sangho } from "@sanghosdk/js"
+import { Sangho, SanghoWebhookSignatureError } from "@sanghosdk/js"
 
 // Express
 app.post(
@@ -266,6 +266,7 @@ app.post(
   express.raw({ type: "application/json" }),
   async (req, res) => {
     try {
+      // Pendant la rotation d'un secret, passez un tableau : [nouveauSecret, ancienSecret]
       const event = await Sangho.constructEvent(
         req.body,
         req.headers["sangho-signature"] as string,
@@ -274,20 +275,94 @@ app.post(
 
       switch (event.type) {
         case "payment_intent.succeeded":
-          await handleSuccessfulPayment(event.data)
+          await handleSuccessfulPayment(event.data.object)
           break
-        case "invoice.paid":
-          await markInvoicePaid(event.data)
+        case "kyc.updated":
+        case "account.updated":
+          await syncSellerAccount(event.data.object) // typé : ConnectAccount
           break
       }
 
       res.json({ received: true })
     } catch (err) {
+      if (err instanceof SanghoWebhookSignatureError) {
+        // err.reason : "malformed" | "expired" | "mismatch"
+        return res.status(err.statusCode ?? 400).send(`Signature refusée (${err.reason})`)
+      }
       res.status(400).send(`Webhook error: ${err.message}`)
     }
   }
 )
 ```
+
+Pour tester votre endpoint, `generateTestHeader(corps, secret)` produit un en-tête `Sangho-Signature` valide.
+
+### Marketplace / Connect
+
+Une plateforme (ex. une place de marché) crée un compte Sangho par vendeur ; Sangho reste seul responsable du paiement et du **KYC**
+(la plateforme ne collecte ni ne stocke aucune pièce d'identité). Toutes ces méthodes exigent une clé secrète
+**et** que l'App appelante ait le statut **Partenaire Plateforme** — accordé manuellement par Sangho (revue
+back-office) après une demande faite depuis le dashboard, pas une simple histoire de clé ou de plan tarifaire.
+Une App marchande ordinaire (B2C, sans ce statut) reçoit un 403 `SanghoPlatformPartnerRequiredError` :
+
+```typescript
+import { Sangho, SanghoPlatformPartnerRequiredError } from "@sanghosdk/js"
+
+try {
+  await sangho.connect.accounts.list()
+} catch (err) {
+  if (err instanceof SanghoPlatformPartnerRequiredError) {
+    // Cette App n'a pas (encore) le statut Partenaire Plateforme.
+  }
+}
+```
+
+```typescript
+import { Sangho, SanghoConflictError } from "@sanghosdk/js"
+
+const sangho = new Sangho(process.env.SANGHO_SECRET_KEY!)
+
+// 1. Créer le compte du vendeur — idempotent par `external_id` (même réponse qu'il existe déjà ou non)
+const account = await sangho.connect.accounts.create(
+  { external_id: "seller-42", email: "ada@example.com", business_name: "Boutique Ada" },
+  { idempotencyKey: "connect-account-seller-42" }
+)
+// account.status === "pending_claim" ; `claim_token` n'est renvoyé QU'À la création :
+// envoyez-le au vendeur par e-mail (lien de réclamation Sangho), sans le stocker ni le journaliser.
+// Perdu ou expiré : await sangho.connect.accounts.reissueClaimToken(account.id) (l'ancien est invalidé)
+
+// 2. Une fois le compte réclamé par le vendeur, lancer le KYC hébergé par Sangho
+try {
+  const session = await sangho.connect.accounts.createKycSession(account.id, {
+    return_url: "https://maplateforme.com/wallet/",   // https obligatoire
+    refresh_url: "https://maplateforme.com/wallet/",
+  })
+  // Redirigez le vendeur : window.location.assign(session.url)  (lien valable environ une heure)
+} catch (err) {
+  if (err instanceof SanghoConflictError && err.code === "account_not_claimed") {
+    // le vendeur n'a pas encore réclamé son compte
+  }
+}
+
+// 3. Le résultat arrive par webhook : `kyc.updated` et `account.updated` (payload = compte à jour)
+const event = await Sangho.constructEvent(rawBody, signatureHeader, webhookSecret)
+if (event.type === "kyc.updated") {
+  const { charges_enabled, payouts_enabled, kyc_level } = event.data.object
+  // n'exposez les produits du vendeur que si charges_enabled est vrai
+}
+
+// Relecture (resynchronisation périodique, mode dégradé)
+const current = await sangho.connect.accounts.retrieve(account.id)
+```
+
+Statuts : `pending_claim` → `linked` (réclamé) → `active` (KYC validé) ; `restricted` (capacités limitées) et `disabled`
+(désactivé par Sangho) coupent les encaissements.
+
+### Idempotence
+
+Toutes les méthodes `create` acceptent `{ idempotencyKey }` en dernier argument : rejouer un appel avec la **même** clé et le même corps
+renvoie la même réponse ; la même clé avec un corps différent lève `SanghoIdempotencyError` (409). Sans clé, le SDK en génère une
+nouvelle à chaque appel.
 
 ---
 
@@ -300,6 +375,7 @@ import {
   SanghoValidationError,
   SanghoNotFoundError,
   SanghoRateLimitError,
+  SanghoError,
 } from "@sanghosdk/js"
 
 try {

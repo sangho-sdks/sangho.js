@@ -2,7 +2,7 @@
 
 import { HttpClient } from "@/core/http";
 import { BaseModule } from "./base";
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
     TerminalReader,
     TerminalSession,
@@ -23,7 +23,7 @@ export class TerminalModule extends BaseModule {
         readers: {
             list: (criteria?: ReaderCriteria) => this._listReaders(criteria),
             retrieve: (id: string) => this._retrieveReader(id),
-            create: (payloads: CreateReaderPayloads) => this._createReader(payloads),
+            create: (payloads: CreateReaderPayloads, options?: RequestOptions) => this._createReader(payloads, options),
             update: (id: string, payloads: Partial<CreateReaderPayloads>) => this._updateReader(id, payloads),
             disable: (id: string) => this._disableReader(id),
             refreshToken: (id: string) => this._refreshToken(id),
@@ -34,7 +34,7 @@ export class TerminalModule extends BaseModule {
         sessions: {
             list: (criteria?: SessionCriteria) => this._listSessions(criteria),
             retrieve: (id: string) => this._retrieveSession(id),
-            create: (payloads: CreateSessionPayloads) => this._createSession(payloads),
+            create: (payloads: CreateSessionPayloads, options?: RequestOptions) => this._createSession(payloads, options),
             presentPaymentMethod: (id: string, payloads: PresentPaymentPayloads) => this._presentPayment(id, payloads),
             pollStatus: (id: string) => this._pollStatus(id),
             cancel: (id: string) => this._cancelSession(id),
@@ -64,9 +64,9 @@ export class TerminalModule extends BaseModule {
         return this.http.get<TerminalReader>(`/terminal/readers/${id}/`);
     }
 
-    protected _createReader(payloads: CreateReaderPayloads): Promise<TerminalReader> {
+    protected _createReader(payloads: CreateReaderPayloads, options?: RequestOptions): Promise<TerminalReader> {
         this.http.assertSecretKey("terminal.readers.create");
-        return this.http.post<TerminalReader>("/terminal/readers/", payloads);
+        return this.http.post<TerminalReader>("/terminal/readers/", payloads, options?.idempotencyKey);
     }
 
     protected _updateReader(
@@ -112,9 +112,9 @@ export class TerminalModule extends BaseModule {
         return this.http.get<TerminalSession>(`/terminal/sessions/${id}/`);
     }
 
-    protected _createSession(payloads: CreateSessionPayloads): Promise<TerminalSession> {
+    protected _createSession(payloads: CreateSessionPayloads, options?: RequestOptions): Promise<TerminalSession> {
         this.http.assertSecretKey("terminal.sessions.create");
-        return this.http.post<TerminalSession>("/terminal/sessions/", payloads);
+        return this.http.post<TerminalSession>("/terminal/sessions/", payloads, options?.idempotencyKey);
     }
 
     protected _presentPayment(

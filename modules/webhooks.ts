@@ -1,6 +1,6 @@
 import { HttpClient } from "@/core/http";
 import { BaseModule } from "./base";
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   Webhook,
   WebhookDelivery,
@@ -14,7 +14,7 @@ export class WebhooksModule extends BaseModule {
   public webhooks = {
     list: (criteria?: WebhookCriteria) => this._list(criteria),
     retrieve: (id: string) => this._retrieve(id),
-    create: (payloads: CreatePayloads) => this._create(payloads),
+    create: (payloads: CreatePayloads, options?: RequestOptions) => this._create(payloads, options),
     update: (id: string, payloads: Payloads) => this._update(id, payloads),
     delete: (id: string) => this._delete(id),
     disable: (id: string) => this._disable(id),
@@ -41,7 +41,7 @@ export class WebhooksModule extends BaseModule {
     return this.http.get<Webhook>(`/webhooks/${id}/`);
   }
 
-  protected _create(payloads: CreatePayloads): Promise<Webhook & { secret: string }> {
+  protected _create(payloads: CreatePayloads, options?: RequestOptions): Promise<Webhook & { secret: string }> {
     this.http.assertSecretKey("webhooks.create");
     return this.http.post<Webhook & { secret: string }>("/webhooks/", payloads);
   }

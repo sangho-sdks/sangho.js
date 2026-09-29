@@ -18,4 +18,5 @@ export { WebhooksModule }         from "./webhooks";
 export { SecurityModule }         from "./security";
 export { PartnersModule }         from "./partners";
 export { TerminalModule }         from "./terminal";
+export { ConnectModule }          from "./connect";
 export { SandboxModule }          from "./sandbox";

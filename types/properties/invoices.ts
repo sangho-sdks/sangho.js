@@ -1,4 +1,4 @@
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   Invoice,
   CreatePayloads,
@@ -27,7 +27,7 @@ export type InvoicesProperties = {
    *
    * @param payloads - `customer` et `line_items` requis
    */
-  create(payloads: CreatePayloads): Promise<Invoice>;
+  create(payloads: CreatePayloads, options?: RequestOptions): Promise<Invoice>;
 
   /**
    * Met à jour une facture en statut `draft` (PATCH).

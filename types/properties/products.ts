@@ -1,4 +1,4 @@
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   Product,
   CreatePayloads,
@@ -48,7 +48,7 @@ export type ProductsProperties = {
    *   type: "service",
    * })
    */
-  create(payloads: CreatePayloads): Promise<Product>;
+  create(payloads: CreatePayloads, options?: RequestOptions): Promise<Product>;
 
   /**
    * Met à jour partiellement un produit (PATCH).

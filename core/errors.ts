@@ -146,6 +146,23 @@ export class SanghoPermissionError extends SanghoError {
 }
 
 /**
+ * 403 — App valide (clé secrète correcte) mais qui n'a pas le statut
+ * **Partenaire Plateforme** requis pour appeler `connect.*`. Ce statut est
+ * accordé manuellement par Sangho (revue back-office) après une demande
+ * depuis le dashboard — ce n'est pas une histoire de clé ou de plan tarifaire,
+ * donc distinct de `SanghoPublicKeyError`. `code` reste `PLATFORM_PARTNER_REQUIRED`.
+ */
+export class SanghoPlatformPartnerRequiredError extends SanghoPermissionError {
+  constructor(
+    message = "This App does not have Platform Partner status. Request it from the Sangho dashboard before calling Connect endpoints.",
+    raw?: SanghoErrorResponse
+  ) {
+    super(message, raw);
+    this.name = "SanghoPlatformPartnerRequiredError";
+  }
+}
+
+/**
  * 404 — Ressource introuvable.
  */
 export class SanghoNotFoundError extends SanghoError {
@@ -208,6 +225,33 @@ export class SanghoIdempotencyError extends SanghoError {
       raw
     );
     this.name = "SanghoIdempotencyError";
+  }
+}
+
+/**
+ * 409 — Conflit d'état métier autre qu'une clé d'idempotence (ex : `account_not_claimed`, `account_disabled`).
+ * Le détail est dans `code`.
+ */
+export class SanghoConflictError extends SanghoError {
+  constructor(message = "Conflict with the current state of the resource.", raw?: SanghoErrorResponse) {
+    super(message, "CONFLICT_ERROR", 409, raw);
+    this.name = "SanghoConflictError";
+  }
+}
+
+export type WebhookSignatureFailure = "malformed" | "expired" | "mismatch";
+
+/**
+ * Signature de webhook invalide. `reason` : `malformed` (en-tête illisible, statut 400), `expired` (horodatage hors tolérance, 400)
+ * ou `mismatch` (aucune signature ne correspond à un secret, 401).
+ */
+export class SanghoWebhookSignatureError extends SanghoError {
+  readonly reason: WebhookSignatureFailure;
+
+  constructor(reason: WebhookSignatureFailure, message: string) {
+    super(message, reason === "mismatch" ? "AUTHENTICATION_ERROR" : "VALIDATION_ERROR", reason === "mismatch" ? 401 : 400);
+    this.name = "SanghoWebhookSignatureError";
+    this.reason = reason;
   }
 }
 

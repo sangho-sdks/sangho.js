@@ -1,4 +1,5 @@
 import type { ListParams, Metadata, Timestamps } from "@/types/common";
+import type { ConnectAccount, ConnectPayment, ConnectPayout } from "@/types/resources/connect";
 
 export type WebhookEventType =
   | "payment_intent.created" | "payment_intent.succeeded"
@@ -13,7 +14,71 @@ export type WebhookEventType =
   | "subscription.canceled" | "subscription.trial_ending"
   | "refund.created" | "refund.updated" | "refund.failed"
   | "checkout.session.completed" | "checkout.session.expired"
-  | "payout.created" | "payout.paid" | "payout.failed";
+  | "payout.created" | "payout.paid" | "payout.failed"
+  | "account.updated" | "kyc.updated"
+  | "account.verified" | "account.restricted"
+  | "payment.succeeded" | "payment.failed"
+  | "funds.released" | "funds.frozen" | "funds.unfrozen"
+  | "refund.succeeded" | "clawback.succeeded";
+
+/** Enveloppe d'un événement reçu (objet de l'événement dans `data.object`). */
+export interface WebhookEventEnvelope<TType extends string, TObject> {
+  id: string;
+  object: "event";
+  api_version?: string;
+  type: TType;
+  /** Timestamp Unix (secondes). */
+  created: number;
+  livemode?: boolean;
+  data: { object: TObject };
+}
+
+/** Compte Connect modifié (statut ou capacités). */
+export type AccountUpdatedEvent = WebhookEventEnvelope<"account.updated", ConnectAccount>;
+/** Résultat du KYC d'un compte Connect (`kyc_level`, `charges_enabled`, `payouts_enabled` à jour). */
+export type KycUpdatedEvent = WebhookEventEnvelope<"kyc.updated", ConnectAccount>;
+
+/** Compte devenu capable d'encaisser (KYC validé) / ayant perdu cette capacité (KYC rejeté, suspension). */
+export type AccountVerifiedEvent = WebhookEventEnvelope<"account.verified", ConnectAccount>;
+export type AccountRestrictedEvent = WebhookEventEnvelope<"account.restricted", ConnectAccount>;
+/** Encaissement d'un paiement Connect (répartition inscrite au registre) / échec ou expiration (répartition annulée). */
+export type PaymentSucceededEvent = WebhookEventEnvelope<"payment.succeeded", ConnectPayment>;
+export type PaymentFailedEvent = WebhookEventEnvelope<"payment.failed", ConnectPayment>;
+/** Fonds libérés / gelés / dégelés (`data.object` = paiement Connect à jour). */
+export type FundsReleasedEvent = WebhookEventEnvelope<"funds.released", ConnectPayment>;
+export type FundsFrozenEvent = WebhookEventEnvelope<"funds.frozen", ConnectPayment>;
+export type FundsUnfrozenEvent = WebhookEventEnvelope<"funds.unfrozen", ConnectPayment>;
+/** Remboursement exécuté ; `clawback.succeeded` = reprise des frais déjà versés au vendeur (son disponible peut devenir négatif). */
+export type ConnectRefundSucceededEvent = WebhookEventEnvelope<"refund.succeeded", ConnectPayment>;
+export type ClawbackSucceededEvent = WebhookEventEnvelope<"clawback.succeeded", ConnectPayment>;
+/** Retrait versé / échoué (`data.object` = retrait). */
+export type PayoutPaidEvent = WebhookEventEnvelope<"payout.paid", ConnectPayout>;
+export type PayoutFailedEvent = WebhookEventEnvelope<"payout.failed", ConnectPayout>;
+
+type TypedEventType =
+  | "account.updated" | "kyc.updated" | "account.verified" | "account.restricted"
+  | "payment.succeeded" | "payment.failed" | "funds.released" | "funds.frozen" | "funds.unfrozen"
+  | "refund.succeeded" | "clawback.succeeded" | "payout.paid" | "payout.failed";
+
+/**
+ * Union discriminée sur `type` : les événements Connect sont typés ; les autres restent génériques (`data.object: unknown`)
+ * en attendant leur typage.
+ */
+export type WebhookEvent =
+  | AccountUpdatedEvent
+  | KycUpdatedEvent
+  | AccountVerifiedEvent
+  | AccountRestrictedEvent
+  | PaymentSucceededEvent
+  | PaymentFailedEvent
+  | FundsReleasedEvent
+  | FundsFrozenEvent
+  | FundsUnfrozenEvent
+  | ConnectRefundSucceededEvent
+  | ClawbackSucceededEvent
+  | PayoutPaidEvent
+  | PayoutFailedEvent
+  | WebhookEventEnvelope<Exclude<WebhookEventType, TypedEventType>, unknown>;
 
 export type WebhookStatus = "ACTIVE" | "INACTIVE" | "DISABLED";
 export type WebhookSecurityProfile = "HMAC_SHA256" | "JWT" | "BASIC";

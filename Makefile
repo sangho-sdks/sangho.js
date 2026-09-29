@@ -2,7 +2,7 @@
 
 # --- Force bash sous Windows (résout ls, /dev/null, true, etc.) ---
 ifeq ($(OS),Windows_NT)
-SHELL := C:\Program Files\Git\cmd\git.exe
+SHELL := bash.exe
 .SHELLFLAGS := -c
 endif
 
@@ -18,7 +18,7 @@ tree:
 
 .DEFAULT_GOAL := help
 .PHONY: help install install-ci dev build build-watch typecheck lint lint-fix \
-        test test-watch test-coverage clean clean-all \
+        test test-watch test-coverage clean clean-all sync \
         version-patch version-minor version-major \
         publish publish-dry changelog release \
         playground docs
@@ -153,6 +153,14 @@ clean-all: clean ## Supprime dist/, node_modules/, coverage/
 	@echo "$(GREEN)✓ Nettoyage complet$(RESET)"
 
 # -----------------------------------------------------------------------------
+# SYNC (évite tout mismatch entre local et origin/main après une release CI)
+# -----------------------------------------------------------------------------
+sync: ## Récupère les derniers commits de origin/main (ex: bump de version fait par le workflow CI)
+	@echo "$(CYAN)→ Synchronisation avec origin/main...$(RESET)"
+	git pull --ff-only origin main
+	@echo "$(GREEN)✓ Branche locale à jour$(RESET)"
+
+# -----------------------------------------------------------------------------
 # VERSIONING (Semantic Versioning)
 # -----------------------------------------------------------------------------
 version-patch: check test ## Bump patch version (0.1.0 → 0.1.1)
@@ -195,17 +203,17 @@ publish: build typecheck test ## Publie sur npm (nécessite NPM_TOKEN)
 # -----------------------------------------------------------------------------
 # RELEASE COMPLÈTE (versioning + git tag + publish)
 # -----------------------------------------------------------------------------
-release-patch: ## Release patch complète (bump + tag + publish)
+release-patch: sync ## Release patch complète (bump + tag + publish)
 	$(MAKE) version-patch
 	$(MAKE) _git-tag-and-push
 	$(MAKE) publish
 
-release-minor: ## Release minor complète (bump + tag + publish)
+release-minor: sync ## Release minor complète (bump + tag + publish)
 	$(MAKE) version-minor
 	$(MAKE) _git-tag-and-push
 	$(MAKE) publish
 
-release-major: ## Release major complète (bump + tag + publish)
+release-major: sync ## Release major complète (bump + tag + publish)
 	$(MAKE) version-major
 	$(MAKE) _git-tag-and-push
 	$(MAKE) publish

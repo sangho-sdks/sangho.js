@@ -21,6 +21,7 @@ import {
   SecurityModule,
   PartnersModule,
   TerminalModule,
+  ConnectModule,
   SandboxModule,
 } from "@/modules";
 import { constructEvent } from "@/utils/webhook";
@@ -45,6 +46,7 @@ import {
   SecurityProperties,
   PartnersProperties,
   TerminalProperties,
+  ConnectProperties,
   SandboxProperties,
 } from "@/types/properties";
 import { BaseModule } from "./modules/base";
@@ -108,7 +110,7 @@ export class Sangho extends Mixins(
     RefundsModule, InvoicesModule, PaymentLinksModule,
     CheckoutSessionsModule, SubscriptionsModule, PaymentMethodsModule,
     ReceiptsModule, WebhooksModule, SecurityModule, PartnersModule,
-    TerminalModule, SandboxModule
+    TerminalModule, ConnectModule, SandboxModule
 ) {
   declare public readonly account: InterfaceOnly<AccountProperties>;
   declare public readonly apps: InterfaceOnly<AppsProperties>;
@@ -128,6 +130,7 @@ export class Sangho extends Mixins(
   declare public readonly security: InterfaceOnly<SecurityProperties>;
   declare public readonly partners: InterfaceOnly<PartnersProperties>;
   declare public readonly terminal: InterfaceOnly<TerminalProperties>;
+  declare public readonly connect: InterfaceOnly<ConnectProperties>;
   declare public readonly sandbox: InterfaceOnly<SandboxProperties>;
 
   constructor(apiKey: string, options: SanghoOptions = {}) {

@@ -34,3 +34,5 @@ pnpm-debug.log*
 #Project
 .commands/
 .project/
+
+*.zip

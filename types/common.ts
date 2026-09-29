@@ -108,6 +108,14 @@ export interface Address {
 
 // ─── Options SDK ──────────────────────────────────────────────────────────────
 
+/**
+ * Options par requête d'écriture (dernier paramètre des méthodes `create`) : sans clé fournie, le SDK en génère
+ * une nouvelle à chaque appel ; pour rejouer un appel sans doublon, passez la MÊME clé.
+ */
+export interface RequestOptions {
+  idempotencyKey?: string;
+}
+
 export interface SanghoOptions {
   /** Override URL de base (utile pour tests/staging) */
   baseURL?: string;

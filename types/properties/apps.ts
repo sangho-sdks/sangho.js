@@ -1,3 +1,4 @@
+import type { RequestOptions } from "@/types/common";
 
 // =============================================================================
 // sangho-sdk-js — @/types/properties/apps.ts
@@ -43,7 +44,7 @@ export type AppsProperties = {
    * @example
    * const app = await sangho.apps.create({ name: "Mon App" })
    */
-  create(payloads: Payloads): Promise<App>;
+  create(payloads: Payloads, options?: RequestOptions): Promise<App>;
 
   /**
    * Met à jour les paramètres de l'application (mise à jour partielle).

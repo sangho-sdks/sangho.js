@@ -17,3 +17,4 @@ export type { SecurityProperties } from "./security";
 export type { PartnersProperties } from "./partners";
 export type { TerminalProperties } from "./terminal";
 export type { SandboxProperties } from "./sandbox";
+export type { ConnectProperties } from "./connect";

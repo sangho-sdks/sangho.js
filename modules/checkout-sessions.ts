@@ -1,6 +1,6 @@
 import { HttpClient } from "@/core/http";
 import { BaseModule } from "./base";
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   CheckoutSession,
   CreatePayloads,
@@ -11,7 +11,7 @@ export class CheckoutSessionsModule extends BaseModule {
   public checkoutSessions = {
     list: (criteria?: CheckoutSessionCriteria) => this._list(criteria),
     retrieve: (id: string) => this._retrieve(id),
-    create: (payloads: CreatePayloads) => this._create(payloads),
+    create: (payloads: CreatePayloads, options?: RequestOptions) => this._create(payloads, options),
     expire: (id: string) => this._expire(id),
     delete: (id: string) => this._delete(id),
     options: () => this._options(),
@@ -32,9 +32,9 @@ export class CheckoutSessionsModule extends BaseModule {
     return this.http.get<CheckoutSession>(`/checkout-sessions/${id}/`);
   }
 
-  protected _create(payloads: CreatePayloads): Promise<CheckoutSession> {
+  protected _create(payloads: CreatePayloads, options?: RequestOptions): Promise<CheckoutSession> {
     this.http.assertSecretKey("checkoutSessions.create");
-    return this.http.post<CheckoutSession>("/checkout-sessions/", payloads);
+    return this.http.post<CheckoutSession>("/checkout-sessions/", payloads, options?.idempotencyKey);
   }
 
   protected _expire(id: string): Promise<CheckoutSession> {

@@ -1,6 +1,6 @@
 import { HttpClient } from "@/core/http";
 import { BaseModule } from "./base";
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   PaymentIntent,
   CreatePayloads,
@@ -15,7 +15,7 @@ export class PaymentIntentsModule extends BaseModule {
   public paymentIntents = {
     list: (criteria?: PaymentIntentCriteria) => this._list(criteria),
     retrieve: (id: string) => this._retrieve(id),
-    create: (payloads: CreatePayloads) => this._create(payloads),
+    create: (payloads: CreatePayloads, options?: RequestOptions) => this._create(payloads, options),
     update: (id: string, payloads: Payloads) => this._update(id, payloads),
     delete: (id: string) => this._delete(id),
     confirm: (id: string, payloads?: ConfirmPayloads) => this._confirm(id, payloads),
@@ -38,9 +38,9 @@ export class PaymentIntentsModule extends BaseModule {
     return this.http.get<PaymentIntent>(`/payment-intents/${id}/`);
   }
 
-  protected _create(payloads: CreatePayloads): Promise<PaymentIntent> {
+  protected _create(payloads: CreatePayloads, options?: RequestOptions): Promise<PaymentIntent> {
     this.http.assertSecretKey("paymentIntents.create");
-    return this.http.post<PaymentIntent>("/payment-intents/", payloads);
+    return this.http.post<PaymentIntent>("/payment-intents/", payloads, options?.idempotencyKey);
   }
 
   protected _update(id: string, payloads: Payloads): Promise<PaymentIntent> {
