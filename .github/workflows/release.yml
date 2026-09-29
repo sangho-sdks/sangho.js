@@ -5,11 +5,11 @@ on:
   workflow_dispatch:
     inputs:
       bump:
-        description: "Type de version"
+        description: "Type de version (current = publie la version actuelle sans la changer)"
         required: true
-        default: patch
+        default: current
         type: choice
-        options: [patch, minor, major]
+        options: [current, patch, minor, major]
 
 jobs:
   release:
@@ -44,7 +44,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          pnpm version ${{ inputs.bump }} -m "chore: release v%s"
+          if [ "${{ inputs.bump }}" = "current" ]; then
+            version=$(node -p "require('./package.json').version")
+            git tag -a "v$version" -m "Release v$version"
+          else
+            pnpm version ${{ inputs.bump }} -m "chore: release v%s"
+          fi
           echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
           git push origin main --follow-tags
 
