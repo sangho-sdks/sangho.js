@@ -1,4 +1,4 @@
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   CheckoutSession,
   CreatePayloads,
@@ -46,7 +46,7 @@ export type CheckoutSessionsProperties = {
    * })
    * window.location.href = session.url
    */
-  create(payloads: CreatePayloads): Promise<CheckoutSession>;
+  create(payloads: CreatePayloads, options?: RequestOptions): Promise<CheckoutSession>;
 
   /**
    * Expire manuellement une session ouverte

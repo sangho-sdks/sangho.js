@@ -14,7 +14,7 @@ import type {
     ReaderCriteria,
     SessionCriteria,
 } from "@/types/resources/terminal";
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 
 
 export type ReadersProperties = {
@@ -72,7 +72,7 @@ export type ReadersProperties = {
      * // Stocker reader.reader_token dans le keystore Android sécurisé
      * await secureStorage.set("reader_token", reader.reader_token)
      */
-    create(payloads: CreateReaderPayloads): Promise<TerminalReader>;
+    create(payloads: CreateReaderPayloads, options?: RequestOptions): Promise<TerminalReader>;
 
     /**
      * Met à jour les informations d'un terminal (mise à jour partielle).
@@ -196,7 +196,7 @@ export type SessionsProperties = {
      * // Afficher le montant sur le terminal
      * afficherEcran(`Montant : ${session.amount} XAF — Présentez votre carte`)
      */
-    create(payloads: CreateSessionPayloads): Promise<TerminalSession>;
+    create(payloads: CreateSessionPayloads, options?: RequestOptions): Promise<TerminalSession>;
 
     /**
      * Notifie le backend que le client a présenté un moyen de paiement.

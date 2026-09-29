@@ -1,4 +1,4 @@
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   Refund,
   CreatePayloads,
@@ -13,7 +13,7 @@ export type RefundsProperties = {
    * Si `amount` est inférieur au montant original, le remboursement est partiel.
    * @param payloads - `transaction` requis (ID `trans_xxx`)
    */
-  create(payloads: CreatePayloads): Promise<Refund>;
+  create(payloads: CreatePayloads, options?: RequestOptions): Promise<Refund>;
   /**
    * Annule un remboursement en statut `pending`.
    * Impossible sur les remboursements `succeeded`, `failed` ou `expired`.

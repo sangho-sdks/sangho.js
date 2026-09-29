@@ -1,6 +1,6 @@
 import { HttpClient } from "@/core/http";
 import { BaseModule } from "./base";
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   Refund,
   CreatePayloads,
@@ -11,7 +11,7 @@ export class RefundsModule extends BaseModule {
   public refunds = {
     list: (criteria?: RefundCriteria) => this._list(criteria),
     retrieve: (id: string) => this._retrieve(id),
-    create: (payloads: CreatePayloads) => this._create(payloads),
+    create: (payloads: CreatePayloads, options?: RequestOptions) => this._create(payloads, options),
     cancel: (id: string) => this._cancel(id),
     options: () => this._options(),
   };
@@ -30,9 +30,9 @@ export class RefundsModule extends BaseModule {
     return this.http.get<Refund>(`/refunds/${id}/`);
   }
 
-  protected _create(payloads: CreatePayloads): Promise<Refund> {
+  protected _create(payloads: CreatePayloads, options?: RequestOptions): Promise<Refund> {
     this.http.assertSecretKey("refunds.create");
-    return this.http.post<Refund>("/refunds/", payloads);
+    return this.http.post<Refund>("/refunds/", payloads, options?.idempotencyKey);
   }
 
   protected _cancel(id: string): Promise<Refund> {

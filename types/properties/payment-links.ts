@@ -1,4 +1,4 @@
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   PaymentLink,
   CreatePayloads,
@@ -50,7 +50,7 @@ export type PaymentLinksProperties = {
    * })
    * console.log(link.url) // https://pay.sangho.ga/test/...
    */
-  create(payloads: CreatePayloads): Promise<PaymentLink>;
+  create(payloads: CreatePayloads, options?: RequestOptions): Promise<PaymentLink>;
 
   /**
    * Met à jour partiellement un lien de paiement (PATCH).

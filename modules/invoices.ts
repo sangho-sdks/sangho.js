@@ -1,6 +1,6 @@
 import { HttpClient } from "@/core/http";
 import { BaseModule } from "./base";
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   Invoice,
   CreatePayloads,
@@ -12,7 +12,7 @@ export class InvoicesModule extends BaseModule {
   public invoices = {
     list: (criteria?: InvoiceCriteria) => this._list(criteria),
     retrieve: (id: string) => this._retrieve(id),
-    create: (payloads: CreatePayloads) => this._create(payloads),
+    create: (payloads: CreatePayloads, options?: RequestOptions) => this._create(payloads, options),
     update: (id: string, payloads: Payloads) => this._update(id, payloads),
     delete: (id: string) => this._delete(id),
     send: (id: string) => this._send(id),
@@ -37,9 +37,9 @@ export class InvoicesModule extends BaseModule {
     return this.http.get<Invoice>(`/invoices/${id}/`);
   }
 
-  protected _create(payloads: CreatePayloads): Promise<Invoice> {
+  protected _create(payloads: CreatePayloads, options?: RequestOptions): Promise<Invoice> {
     this.http.assertSecretKey("invoices.create");
-    return this.http.post<Invoice>("/invoices/", payloads);
+    return this.http.post<Invoice>("/invoices/", payloads, options?.idempotencyKey);
   }
 
   protected _update(id: string, payloads: Payloads): Promise<Invoice> {

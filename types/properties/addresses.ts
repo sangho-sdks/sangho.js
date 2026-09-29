@@ -1,3 +1,4 @@
+import type { RequestOptions } from "@/types/common";
 import type {
     CompanyAddress,
     CreatePayloads,
@@ -50,7 +51,7 @@ export type AddressesProperties = {
      *   country: "GA",
      * })
      */
-    create(payloads: CreatePayloads): Promise<CompanyAddress>;
+    create(payloads: CreatePayloads, options?: RequestOptions): Promise<CompanyAddress>;
 
     /**
      * Met à jour partiellement une adresse (PATCH).

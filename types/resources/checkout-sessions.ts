@@ -1,3 +1,4 @@
+import type { ConnectSplit } from "@/types/resources/connect";
 import type {
   AmountInCents,
   CurrencyCode,
@@ -17,10 +18,13 @@ export type CheckoutMode = "payment" | "subscription" | "setup";
 
 /** Ligne de commande — type local, découplé de payment-links */
 export interface LineItem {
-  product: string;          // ID prod_xxx
+  /** ID prod_xxx. Facultatif : une ligne ad hoc (panier libre) porte `name` + `unit_amount` sans produit du catalogue. */
+  product?: string;
   quantity: number;
-  unit_amount?: number;     // snapshot prix au moment de la création
-  name?: string;            // snapshot nom produit
+  /** Prix unitaire, unité majeure (5000 = 5000 XAF). Sans `product`, requis (le prix du produit n'est pas relu). */
+  unit_amount?: number;
+  /** Libellé de la ligne (requis sans `product`). */
+  name?: string;
   currency?: CurrencyCode;
 }
 
@@ -46,6 +50,8 @@ export interface CheckoutSession extends Timestamps {
   cancel_url?: string | null;
   payment_intent?: string | null;
   subscription?: string | null;
+  /** Paiement Connect (`cpay_xxx`) créé avec la session quand le bloc `connect` a été fourni. */
+  connect_payment?: string | null;
   expires_at: string;
   metadata: Metadata;
 }
@@ -62,6 +68,11 @@ export interface CreatePayloads {
   shipping_amount?: AmountInCents;
   discount_amount?: AmountInCents;
   payment_method_types?: string[];
+  /**
+   * Paiement avec répartition au profit d'un compte connecté (séquestre / instantané). `shipping_amount` = part disponible tout de suite
+   * pour le vendeur ; le reste est bloqué (`escrow`) ou versé (`instant`). Réponse : `connect_payment`.
+   */
+  connect?: ConnectSplit;
   /** Durée de validité en secondes (défaut: 1800, max: 86400) */
   expires_in?: number;
   metadata?: Metadata;

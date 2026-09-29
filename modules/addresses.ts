@@ -1,3 +1,4 @@
+import type { RequestOptions } from "@/types/common";
 import { HttpClient } from "@/core/http";
 import { BaseModule } from "./base";
 import type {
@@ -12,7 +13,7 @@ export class AddressesModule extends BaseModule {
   public addresses = {
     list: (criteria?: AddressCriteria) => this._list(criteria),
     retrieve: (id: string) => this._retrieve(id),
-    create: (payloads: CreatePayloads) => this._create(payloads),
+    create: (payloads: CreatePayloads, options?: RequestOptions) => this._create(payloads, options),
     update: (id: string, payloads: Payloads) => this._update(id, payloads),
     delete: (id: string) => this._delete(id),
     options: () => this._options(),
@@ -32,9 +33,9 @@ export class AddressesModule extends BaseModule {
     return this.http.get<CompanyAddress>(`/addresses/${id}/`);
   }
 
-  protected _create(payloads: CreatePayloads): Promise<CompanyAddress> {
+  protected _create(payloads: CreatePayloads, options?: RequestOptions): Promise<CompanyAddress> {
     this.http.assertSecretKey("addresses.create");
-    return this.http.post<CompanyAddress>("/addresses/", payloads);
+    return this.http.post<CompanyAddress>("/addresses/", payloads, options?.idempotencyKey);
   }
 
   protected _update(id: string, payloads: Payloads): Promise<CompanyAddress> {

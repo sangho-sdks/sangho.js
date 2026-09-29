@@ -1,4 +1,4 @@
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   Webhook,
   WebhookDelivery,
@@ -16,7 +16,7 @@ export type WebhooksProperties = {
    * Le secret de signature est retourné en clair une seule fois dans la réponse.
    * Stockez-le immédiatement — il ne sera plus accessible ensuite.
    */
-  create(payloads: CreatePayloads): Promise<Webhook & { secret: string }>;
+  create(payloads: CreatePayloads, options?: RequestOptions): Promise<Webhook & { secret: string }>;
   update(id: string, payloads: Payloads): Promise<Webhook>;
   /** Supprime un webhook (HTTP 204). */
   delete(id: string): Promise<void>;

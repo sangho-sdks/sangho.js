@@ -1,4 +1,4 @@
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   PaymentIntent,
   CreatePayloads,
@@ -50,7 +50,7 @@ export type PaymentIntentsProperties = {
    *   description: "Commande #42",
    * })
    */
-  create(payloads: CreatePayloads): Promise<PaymentIntent>;
+  create(payloads: CreatePayloads, options?: RequestOptions): Promise<PaymentIntent>;
 
   /**
    * Met à jour un PaymentIntent avant sa confirmation (PATCH).

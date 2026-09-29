@@ -1,6 +1,6 @@
 import { HttpClient } from "@/core/http";
 import { BaseModule } from "./base";
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   Subscription,
   CreatePayloads,
@@ -12,7 +12,7 @@ export class SubscriptionsModule extends BaseModule {
   public subscriptions = {
     list: (criteria?: SubscriptionCriteria) => this._list(criteria),
     retrieve: (id: string) => this._retrieve(id),
-    create: (payloads: CreatePayloads) => this._create(payloads),
+    create: (payloads: CreatePayloads, options?: RequestOptions) => this._create(payloads, options),
     update: (id: string, payloads: Payloads) => this._update(id, payloads),
     cancel: (id: string, payloads?: { cancel_at_period_end?: boolean }) => this._cancel(id, payloads),
     reactivate: (id: string) => this._reactivate(id),
@@ -35,9 +35,9 @@ export class SubscriptionsModule extends BaseModule {
     return this.http.get<Subscription>(`/subscriptions/${id}/`);
   }
 
-  protected _create(payloads: CreatePayloads): Promise<Subscription> {
+  protected _create(payloads: CreatePayloads, options?: RequestOptions): Promise<Subscription> {
     this.http.assertSecretKey("subscriptions.create");
-    return this.http.post<Subscription>("/subscriptions/", payloads);
+    return this.http.post<Subscription>("/subscriptions/", payloads, options?.idempotencyKey);
   }
 
   protected _update(id: string, payloads: Payloads): Promise<Subscription> {

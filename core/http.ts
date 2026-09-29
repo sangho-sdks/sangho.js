@@ -4,12 +4,14 @@
 
 import {
   SanghoAuthError,
+  SanghoConflictError,
   SanghoError,
   SanghoErrorResponse,
   SanghoIdempotencyError,
   SanghoNetworkError,
   SanghoNotFoundError,
   SanghoPermissionError,
+  SanghoPlatformPartnerRequiredError,
   SanghoPublicKeyError,
   SanghoRateLimitError,
   SanghoTimeoutError,
@@ -194,7 +196,11 @@ export class HttpClient {
 
     if (response.ok) return data as T;
 
-    const raw = data as Record<string, unknown>;
+    // Les routes Connect renvoient `{ error: { code, message } }` : on aplatit pour lire le même format partout.
+    const body = data as Record<string, unknown>;
+    const nested = body["error"];
+    const raw: Record<string, unknown> =
+      nested && typeof nested === "object" ? { ...body, ...(nested as Record<string, unknown>) } : body;
 
     const errorResponse: SanghoErrorResponse = {
       message: (raw["message"] as string) ?? (raw["detail"] as string) ?? "API error",
@@ -219,11 +225,19 @@ export class HttpClient {
         if (code === "public_key_not_allowed") {
           throw new SanghoPublicKeyError(message, errorResponse);
         }
+        if (code === "platform_partner_required") {
+          throw new SanghoPlatformPartnerRequiredError(message, errorResponse);
+        }
         throw new SanghoPermissionError(message, errorResponse);
       case 404:
         throw new SanghoNotFoundError(message, errorResponse);
       case 409:
-        throw new SanghoIdempotencyError(errorResponse);
+        // Sans code (ancien backend) ou `idempotency_conflict` : clé d'idempotence rejouée avec un autre corps ;
+        // tout autre code est un conflit d'état métier (ex : `account_not_claimed`).
+        if (!code || code === "idempotency_conflict") {
+          throw new SanghoIdempotencyError(errorResponse);
+        }
+        throw new SanghoConflictError(message, errorResponse);
       case 422:
         throw new SanghoValidationError(errorResponse);
       case 429: {

@@ -13,14 +13,17 @@ export {
   SanghoAuthError,
   SanghoPublicKeyError,
   SanghoPermissionError,
+  SanghoPlatformPartnerRequiredError,
   SanghoNotFoundError,
   SanghoValidationError,
   SanghoRateLimitError,
   SanghoIdempotencyError,
   SanghoNetworkError,
   SanghoTimeoutError,
+  SanghoConflictError,
+  SanghoWebhookSignatureError,
 } from "./core/errors";
-export type { SanghoErrorType, SanghoErrorResponse } from "./core/errors";
+export type { SanghoErrorType, SanghoErrorResponse, WebhookSignatureFailure } from "./core/errors";
 
 // ─── Types communs ────────────────────────────────────────────────────────────
 export type {
@@ -32,6 +35,7 @@ export type {
   Address,
   Metadata,
   SanghoOptions,
+  RequestOptions,
 } from "./types/common";
 
 // ─── Types de ressources ──────────────────────────────────────────────────────
@@ -80,6 +84,31 @@ export type {
 export type {
   Partner
 } from "./types/resources/partners";
+export type {
+  ConnectAccount,
+  ConnectAccountStatus,
+  CreatedConnectAccount,
+  CreateConnectAccountPayloads,
+  CreateKycSessionPayloads,
+  KycSession,
+  ConnectBalance,
+  ConnectPayment,
+  ConnectPaymentMode,
+  ConnectPaymentStatus,
+  ConnectPayout,
+  ConnectPayoutList,
+  ConnectPayoutStatus,
+  ConnectRefundScope,
+  ConnectSplit,
+  CreateConnectPayoutPayloads,
+  RefundConnectPaymentPayloads,
+  DecimalString,
+} from "./types/resources/connect";
 
 // ─── Utilitaires ─────────────────────────────────────────────────────────────
-export { constructEvent } from "./utils/webhook";
+export { constructEvent, generateTestHeader } from "./utils/webhook";
+export type {
+  WebhookEvent, AccountUpdatedEvent, KycUpdatedEvent, AccountVerifiedEvent, AccountRestrictedEvent,
+  PaymentSucceededEvent, PaymentFailedEvent, FundsReleasedEvent, FundsFrozenEvent, FundsUnfrozenEvent,
+  ConnectRefundSucceededEvent, ClawbackSucceededEvent, PayoutPaidEvent, PayoutFailedEvent,
+} from "./types/resources/webhooks";

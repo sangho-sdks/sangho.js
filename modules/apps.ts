@@ -1,3 +1,4 @@
+import type { RequestOptions } from "@/types/common";
 
 // =============================================================================
 // sangho-sdk-js — @/modules/apps.ts
@@ -11,7 +12,7 @@ export class AppsModule extends BaseModule {
   public apps = {
     list: (criteria?: AppCriteria) => this._list(criteria),
     retrieve: (id: string) => this._retrieve(id),
-    create: (payloads: Payloads) => this._create(payloads),
+    create: (payloads: Payloads, options?: RequestOptions) => this._create(payloads, options),
     update: (id: string, payloads: Payloads) => this._update(id, payloads),
     delete: (id: string) => this._delete(id),
     keys: (id: string) => this._keys(id),
@@ -32,9 +33,9 @@ export class AppsModule extends BaseModule {
     return this.http.get<App>(`/apps/${id}/`);
   }
 
-  protected _create(payloads: Payloads): Promise<App> {
+  protected _create(payloads: Payloads, options?: RequestOptions): Promise<App> {
     this.http.assertSecretKey("apps.create");
-    return this.http.post<App>("/apps/", payloads);
+    return this.http.post<App>("/apps/", payloads, options?.idempotencyKey);
   }
 
   protected _update(id: string, payloads: Payloads): Promise<App> {

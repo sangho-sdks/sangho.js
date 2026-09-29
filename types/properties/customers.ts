@@ -1,4 +1,4 @@
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   Customer,
   CreatePayloads,
@@ -47,7 +47,7 @@ export type CustomersProperties = {
    *   name: "Jean Ondo",
    * })
    */
-  create(payloads: CreatePayloads): Promise<Customer>;
+  create(payloads: CreatePayloads, options?: RequestOptions): Promise<Customer>;
 
   /**
    * Met à jour partiellement un client (PATCH).

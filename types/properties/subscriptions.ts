@@ -1,4 +1,4 @@
-import type { ListResponse, DRFOptions } from "@/types/common";
+import type { ListResponse, DRFOptions, RequestOptions } from "@/types/common";
 import type {
   Subscription,
   CreatePayloads,
@@ -14,7 +14,7 @@ export type SubscriptionsProperties = {
    * Si `trial_period_days > 0`, démarre en statut `"trialing"`.
    * @param payloads - `customer`, `unit_amount` et `interval` requis
    */
-  create(payloads: CreatePayloads): Promise<Subscription>;
+  create(payloads: CreatePayloads, options?: RequestOptions): Promise<Subscription>;
   update(id: string, payloads: Payloads): Promise<Subscription>;
   /**
    * Annule un abonnement.
