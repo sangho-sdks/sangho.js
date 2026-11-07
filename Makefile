@@ -1,3 +1,4 @@
+# Makefile
 .DEFAULT_GOAL := help
 
 # --- Force bash sous Windows (résout ls, /dev/null, true, etc.) ---
@@ -21,7 +22,7 @@ tree:
         test test-watch test-coverage clean clean-all sync \
         version-patch version-minor version-major \
         publish publish-dry changelog release \
-        playground docs
+        playground docs commit
 
 # -----------------------------------------------------------------------------
 # Couleurs terminal
@@ -199,6 +200,15 @@ publish: build typecheck test ## Publie sur npm (nécessite NPM_TOKEN)
 	fi
 	$(PNPM) publish --no-git-checks --registry $(REGISTRY)
 	@echo "$(GREEN)✓ $(PKG_NAME)@$(VERSION) publié sur npm$(RESET)"
+
+# -----------------------------------------------------------------------------
+# GIT
+# -----------------------------------------------------------------------------
+commit: ## Commit tous les changements avec commit.txt comme message
+	@echo "$(CYAN)→ Commit (message : commit.txt)...$(RESET)"
+	git add -A
+	git commit -F commit.txt
+	@echo "$(GREEN)✓ Commit créé$(RESET)"
 
 # -----------------------------------------------------------------------------
 # RELEASE COMPLÈTE (versioning + git tag + publish)

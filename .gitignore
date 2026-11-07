@@ -1,3 +1,4 @@
+# .gitignore
 # Dependencies
 node_modules/
 .pnp
@@ -36,3 +37,6 @@ pnpm-debug.log*
 .project/
 
 *.zip
+
+# Message de commit local (make commit)
+commit.txt

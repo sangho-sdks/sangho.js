@@ -1,3 +1,4 @@
+<!-- README.md -->
 # @sanghosdk/js — SDK JavaScript / TypeScript officiel
 
 SDK officiel de [Sangho](https://sangho.ga), la plateforme de paiement B2B pour l'Afrique francophone.
@@ -5,6 +6,10 @@ SDK officiel de [Sangho](https://sangho.ga), la plateforme de paiement B2B pour 
 [![npm](https://img.shields.io/npm/v/@sanghosdk/js)](https://www.npmjs.com/package/@sanghosdk/js)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescriptlang.org/)
 [![Docs](https://img.shields.io/badge/docs-docs.sangho.ga-navy)](https://docs.sangho.ga)
+
+[![Site](https://img.shields.io/badge/Site-sangho.ga-0B1F3A?style=for-the-badge)](https://sangho.ga) [![Documentation](https://img.shields.io/badge/Documentation-docs.sangho.ga/nodejs-1D4ED8?style=for-the-badge)](https://docs.sangho.ga/api/sdks/nodejs/) [![Tableau de bord](https://img.shields.io/badge/Tableau%20de%20bord-dash.sangho.ga-0F766E?style=for-the-badge)](https://dash.sangho.ga) [![CGU](https://img.shields.io/badge/CGU-legal.sangho.ga-475569?style=for-the-badge)](https://legal.sangho.ga/cgu/)
+
+Acceptez les paiements **Mobile Money** et **carte** en **XAF** au Gabon et en Afrique centrale (CEMAC) avec le SDK JavaScript / TypeScript officiel de [Sangho](https://sangho.ga) : payment intents, checkout hébergé, abonnements, factures, remboursements et webhooks signés.
 
 ---
 
@@ -436,6 +441,27 @@ Ce SDK est un client **serveur** — il n'y a pas de build navigateur/UMD ni de 
 | TypeScript ≥ 5.0 | ✅ types complets |
 
 ---
+
+## Liens utiles
+
+| | |
+|---|---|
+| Site | [sangho.ga](https://sangho.ga) |
+| Documentation de ce SDK | [docs.sangho.ga/api/sdks/nodejs](https://docs.sangho.ga/api/sdks/nodejs/) |
+| Documentation générale | [docs.sangho.ga](https://docs.sangho.ga) |
+| Tableau de bord | [dash.sangho.ga](https://dash.sangho.ga) |
+| Support / Contact | [sangho.ga/support](https://sangho.ga/support/) · [sangho.ga/contact](https://sangho.ga/contact/) |
+| Conditions générales d'utilisation | [legal.sangho.ga/cgu](https://legal.sangho.ga/cgu/) |
+| Politique de confidentialité | [legal.sangho.ga/privacy](https://legal.sangho.ga/privacy/) |
+| Accord de services de paiement | [legal.sangho.ga/payment-terms](https://legal.sangho.ga/payment-terms/) |
+| Mentions légales | [legal.sangho.ga/legal-notice](https://legal.sangho.ga/legal-notice/) |
+| Sécurité (signalement) | [SECURITY.md](SECURITY.md) |
+
+## Autres SDK Sangho
+
+[Python](https://github.com/sangho-sdks/sangho.python) · [PHP](https://github.com/sangho-sdks/sangho.php) · [JavaScript / TypeScript](https://github.com/sangho-sdks/sangho.js)
+
+Ce SDK est distribué sur [npm](https://www.npmjs.com/package/@sanghosdk/js).
 
 ## Licence
 
